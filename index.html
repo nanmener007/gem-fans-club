@@ -434,10 +434,14 @@
         <div class="publish-area">
             <textarea id="post-text" placeholder="分享关于 G.E.M. 的点滴..."></textarea>
             <!-- 修复后的上传控件：增加capture="none"，优化样式 -->
-            <div class="upload-controls">
-                <label for="post-file" class="custom-file-btn">📸 选择媒体 (最多9张)</label>
-                <input type="file" id="post-file" accept="image/*,video/*" multiple onchange="handleFileSelect(event)" style="display:none;">
-            </div>
+            <!-- 替换原来的 upload-controls div -->
+<div class="upload-controls" style="gap: 10px;">
+    <label for="post-image" class="custom-file-btn">🖼️ 选择图片</label>
+    <input type="file" id="post-image" accept="image/*" multiple onchange="handleFileSelect(event)" style="display:none;">
+
+    <label for="post-video" class="custom-file-btn">🎬 选择视频</label>
+    <input type="file" id="post-video" accept="video/*" onchange="handleFileSelect(event)" style="display:none;">
+</div>
             <div id="preview-container" style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;"></div>
             <button onclick="addPost()" class="listen-btn">发布动态</button>
         </div>
