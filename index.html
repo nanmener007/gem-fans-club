@@ -14,7 +14,6 @@
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #050510; color: #fff; overflow-x: hidden;
         }
-
         /* --- 第一页：斜切大封面 --- */
         .welcome-screen {
             position: relative; width: 100%; height: 100vh;
@@ -49,7 +48,6 @@
         .honor-list { list-style: none; padding: 0; margin-top: 40px; }
         .honor-list .num { display: block; font-size: 2.8rem; font-weight: bold; color: #ff007f; text-shadow: 0 0 20px rgba(255, 0, 127, 0.6); }
         .honor-list .text { font-size: 1rem; color: #888; letter-spacing: 2px; }
-
         /* --- 第二页：专辑网格 --- */
         .main-content {
             padding: 100px 5%;
@@ -72,7 +70,6 @@
             background: linear-gradient(45deg, #ff007f, #7928ca); color: white;
             padding: 8px 20px; border-radius: 20px; font-size: 0.8rem; border: none; cursor: pointer;
         }
-
         /* --- 第三页：歌词墙 --- */
         .lyrics-universe {
             padding: 100px 5%; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
@@ -96,14 +93,12 @@
             animation: floatLyrics 6s ease-in-out infinite; 
             white-space: nowrap;
         }
-
         /* --- 第四页：高级感留言板 --- */
         .fan-board {
             padding: 100px 5%;
             background: #050510;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;
         }
-
         .fan-board::before {
             content: "";
             position: absolute;
@@ -117,7 +112,6 @@
             animation: gridMove 15s linear infinite;
             z-index: 0;
         }
-
         .fan-board::after {
             content: "";
             position: absolute;
@@ -125,7 +119,6 @@
             background: linear-gradient(to top, rgba(121, 40, 202, 0.2), transparent);
             z-index: 0; pointer-events: none;
         }
-
         .publish-area {
             position: relative; z-index: 1; width: 100%; max-width: 800px;
             background: rgba(255, 255, 255, 0.05); 
@@ -156,7 +149,6 @@
             position: relative;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-
         .media-grid {
             display: grid; gap: 8px; margin-top: 15px; width: 100%; max-width: 500px;
         }
@@ -164,7 +156,6 @@
         .media-grid[data-count="2"], .media-grid[data-count="4"] { grid-template-columns: 1fr 1fr; width: 340px; }
         .media-grid[data-count="3"], .media-grid[data-count="5"], .media-grid[data-count="6"], 
         .media-grid[data-count="7"], .media-grid[data-count="8"], .media-grid[data-count="9"] { grid-template-columns: repeat(3, 1fr); }
-
         .media-container { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
         .media-container img, .media-container video { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
         
@@ -181,7 +172,6 @@
         }
         .download-pop span { padding: 6px 12px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; }
         .download-pop span:hover { background: #00ffff; color: #000; }
-
         .action-item.liked { color: #ff007f; }
         .comment-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); display: none; }
         .comment-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
@@ -197,7 +187,6 @@
         }
         .comment-item:hover .del-comment-icon { opacity: 1; }
         .del-comment-icon:hover { color: #ff4d4d; }
-
         .comment-input-wrap { display: flex; gap: 10px; margin-top: 10px; }
         .comment-input-wrap input {
             flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(0,255,255,0.1);
@@ -208,18 +197,14 @@
             padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: 0.3s;
         }
         .comment-submit:hover { background: #00ffff; color: #000; }
-
         .action-bar { display: flex; gap: 25px; margin-top: 15px; }
         .action-item { cursor: pointer; font-size: 0.85rem; color: #777; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
         .action-item:hover { color: #00ffff; }
-
         .delete-btn { position: absolute; top: 20px; right: 20px; color: #444; cursor: pointer; z-index: 5; }
         .delete-btn:hover { color: #ff4d4d; }
-
         .feed-user { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .feed-avatar { width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(45deg, #00ffff, #7928ca); display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .feed-content { line-height: 1.6; color: #eee; font-size: 1.05rem; }
-
         /* --- 播放器与大图查看器叠加层 --- */
         #player-overlay, #img-viewer { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -227,22 +212,19 @@
             z-index: 1000; display: none; align-items: center; justify-content: center; 
         }
         #img-viewer img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
-
         .player-container { display: flex; align-items: center; gap: 50px; width: 90%; max-width: 1100px; position: relative; }
         .close-player, .close-viewer { position: absolute; top: -40px; right: 0; font-size: 2rem; cursor: pointer; color: #fff; }
         .vinyl-disc { width: 300px; height: 300px; border-radius: 50%; border: 10px solid #111; background-size: cover; animation: rotateLP 6s linear infinite; }
         iframe { width: 600px; height: 400px; border-radius: 15px; }
-
-        @keyframes gridMove {
-            from { background-position: 0 0; }
-            to { background-position: 0 100%; }
-        }
-        @keyframes rotateLP { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-        @keyframes floatLyrics { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes slideFromLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-        @keyframes slideFromRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        @media (max-width: 768px) {
+        /* --- 移动端预览图适配（核心新增）--- */
+        @media (max-width:768px) {
+            #preview-container {
+                gap:8px !important;
+            }
+            #preview-container div {
+                width:70px !important;
+                height:70px !important;
+            }
             .welcome-screen { flex-direction: column; }
             .left-hero, .right-honor { position: relative; width: 100%; clip-path: none; height: 50vh; text-align: center; padding: 0; }
             .lyrics-container { height: auto; display: flex; flex-direction: column; gap: 15px; }
@@ -251,9 +233,7 @@
             .player-container { flex-direction: column; gap: 20px; }
             .media-grid { max-width: 100%; }
         }
-
        
-
         #back-to-top {
     position: fixed;
     bottom: 30px;
@@ -274,19 +254,15 @@
     opacity: 0; /* 默认隐藏 */
     visibility: hidden;
 }
-
 #back-to-top:hover {
     transform: translateY(-5px); /* 悬停微动 */
     box-shadow: 0 6px 20px rgba(255, 0, 128, 0.4);
 }
-
 /* 当页面滚动后显示按钮 */
 #back-to-top.show {
     opacity: 1;
     visibility: visible;
 }
-
-
 /* 灯箱容器 */
 #lightbox {
     display: none; /* 默认隐藏 */
@@ -302,7 +278,6 @@
     cursor: zoom-out;
     backdrop-filter: blur(5px); /* 背景模糊，增加高级感 */
 }
-
 /* 灯箱里的图片 */
 #lightbox-img {
     max-width: 90%;
@@ -312,12 +287,10 @@
     transform: scale(0.8); /* 初始缩小一点，配合动画 */
     transition: transform 0.3s ease;
 }
-
 /* 显示时的动画 */
 #lightbox.active #lightbox-img {
     transform: scale(1);
 }
-
 /* 关闭按钮 */
 .close-btn {
     position: absolute;
@@ -328,14 +301,26 @@
     font-weight: bold;
     cursor: pointer;
 }
-
-
-
-
+        /* 上传控件样式（核心新增） */
+        .upload-controls {
+            margin-bottom:10px; 
+            display:flex;
+            align-items:center;
+        }
+        .custom-file-btn {
+            cursor:pointer; 
+            color:#00ffff; 
+            display:flex;
+            align-items:center;
+            gap:8px; 
+            padding:6px 12px; 
+            border:1px solid #00ffff; 
+            border-radius:20px; 
+            font-size:0.9rem;
+        }
     </style>
 </head>
 <body>
-
     <section class="welcome-screen">
         <div class="top-left-avatar">
             <img src="images/gem-avatar.jpg" alt="Logo">
@@ -351,7 +336,6 @@
             </ul>
         </div>
     </section>
-
     <main class="main-content">
         <h1 style="text-shadow: 0 0 10px #00ffff; margin-bottom: 50px;">ALBUMS COLLECTION</h1>
         <div class="album-grid">
@@ -432,7 +416,6 @@
             </div>
         </div>
     </main>
-
     <section class="lyrics-universe">
         <h1 style="text-shadow: 0 0 15px #ff007f;">LYRICS UNIVERSE</h1>
         <div class="lyrics-container">
@@ -446,25 +429,20 @@
             <div class="lyric-card" style="top: 45%; left: 50%; animation-delay: 0.3s;">“小王子爱着玫瑰 每天浇水 却不能体会 玫瑰其实憔悴。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《寂寞星球的玫瑰》</span></div>
         </div>
     </section>
-
     <section class="fan-board">
         <h1 style="position:relative; z-index:1; text-shadow: 0 0 15px #00ffff; color: #00ffff; margin-bottom: 20px;">FAN BOARD</h1>
         <div class="publish-area">
-    <textarea id="post-text" placeholder="分享关于 G.E.M. 的点滴..."></textarea>
-    
-    <div class="upload-controls">
-        <label for="post-file" class="custom-file-btn">📸 选择图片/视频 (可多选)</label>
-        <input type="file" id="post-file" accept="image/*,video/*" multiple onchange="handleFileSelect(event)" style="display:none;">
-    </div>
-
-    <div id="preview-container" style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;"></div>
-
-    <button onclick="addPost()" class="listen-btn">发布动态</button>
-</div>
+            <textarea id="post-text" placeholder="分享关于 G.E.M. 的点滴..."></textarea>
+            <!-- 修复后的上传控件：增加capture="none"，优化样式 -->
+            <div class="upload-controls">
+                <label for="post-file" class="custom-file-btn">📸 选择媒体 (最多9张)</label>
+                <input type="file" id="post-file" accept="image/*,video/*" multiple capture="none" onchange="handleFileSelect(event)" style="display:none;">
+            </div>
+            <div id="preview-container" style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;"></div>
+            <button onclick="addPost()" class="listen-btn">发布动态</button>
         </div>
         <div class="feed-container" id="feed-container"></div>
     </section>
-
     <div id="player-overlay">
         <div class="player-container">
             <span class="close-player" onclick="closePlayer()">✕</span>
@@ -477,55 +455,36 @@
             </div>
         </div>
     </div>
-
     <div id="img-viewer" onclick="closeViewer()">
         <span class="close-viewer">✕</span>
         <img id="view-img" src="" alt="Full size image">
     </div>
-
-
     <div id="back-to-top" onclick="scrollToTop()">
-    <span style="font-size: 20px;">↑</span>
-    <div style="font-size: 10px;">TOP</div>
+        <span style="font-size: 20px;">↑</span>
+        <div style="font-size: 10px;">TOP</div>
     </div>
-
     <div id="lightbox" onclick="closeViewer()">
-    <span class="close-btn">&times;</span>
-    <img id="lightbox-img" src="" alt="放大图片">
+        <span class="close-btn">&times;</span>
+        <img id="lightbox-img" src="" alt="放大图片">
     </div>
-
     <script>
         // 获取或生成用户的唯一昵称
-function getUserId() {
-    let userId = localStorage.getItem('gem_user_id');
-    
-    if (!userId) {
-        // 如果没有，就随机生成一个
-        const randomStr = Math.random().toString(36).substring(2, 6); // 取4位随机字符
-        userId = `粉丝_${randomStr}`; 
-        localStorage.setItem('gem_user_id', userId);
-    }
-    
-    return userId;
-}
-
-// 初始化当前用户的名称显示（可选，你可以把它显示在发布框附近）
-const currentUserName = getUserId();
-console.log("当前用户昵称:", currentUserName);
-
-
-
-
-
-
+        function getUserId() {
+            let userId = localStorage.getItem('gem_user_id');
+            if (!userId) {
+                const randomStr = Math.random().toString(36).substring(2, 6);
+                userId = `粉丝_${randomStr}`; 
+                localStorage.setItem('gem_user_id', userId);
+            }
+            return userId;
+        }
+        const currentUserName = getUserId();
+        console.log("当前用户昵称:", currentUserName);
+        
         const SUPABASE_URL = 'https://ubgdctufazaxqydzjfjm.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_G--UZTZyO-9PFAFC8P0lQw_Dy4lrymG';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         
-
-
-
         // 播放器逻辑
         function openPlayer(title, img, videoUrl) {
             document.getElementById('p-name').innerText = title;
@@ -533,486 +492,385 @@ console.log("当前用户昵称:", currentUserName);
             document.getElementById('bili-player').src = videoUrl + "&high_quality=1";
             document.getElementById('player-overlay').style.display = 'flex';
         }
-        function closePlayer() { document.getElementById('player-overlay').style.display = 'none'; document.getElementById('bili-player').src = ""; }
-        
-        // 新增：查看图片逻辑
-        
+        function closePlayer() { 
+            document.getElementById('player-overlay').style.display = 'none'; 
+            document.getElementById('bili-player').src = ""; 
+        }
 
-        
-
-        function handlePreview() {
-            const files = Array.from(document.getElementById('post-file').files);
-            const previewContainer = document.getElementById('preview-container');
-            previewContainer.innerHTML = '';
-            selectedFiles = files.slice(0, 9);
-
+        // 全局变量：存放选中的文件（兼容移动端，纯数组管理）
+        let selectedFiles = [];
+        // 处理文件选择（核心修复：移除DataTransfer，增加去重、重置input）
+        function handleFileSelect(event) {
+            const container = document.getElementById('preview-container');
+            container.innerHTML = ''; // 清空旧预览
+            const newFiles = Array.from(event.target.files);
+            // 最多选9张，合并去重（避免重复选择）
+            selectedFiles = [...new Set([...selectedFiles, ...newFiles])].slice(0,9);
+            // 渲染预览图
             selectedFiles.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const div = document.createElement('div');
-                    div.style = "width:80px; height:80px; border-radius:8px; overflow:hidden; border:1px solid #00ffff; position:relative;";
-                    if (file.type.startsWith('image/')) {
-                        div.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover; cursor:pointer;" onclick="openViewer('${e.target.result}')">`;
-                    } else {
-                        div.innerHTML = `<div style="background:#111; height:100%; display:flex; align-items:center; justify-content:center; font-size:20px;">🎬</div>`;
-                    }
-                    previewContainer.appendChild(div);
+                    div.style = "position:relative; width:80px; height:80px;";
+                    div.innerHTML = `
+                        <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover; border-radius:8px; border:1px solid #ff4d4d;">
+                        <div style="position:absolute; top:-6px; right:-6px; background:#ff4d4d; color:white; border-radius:50%; width:22px; height:22px; text-align:center; line-height:22px; cursor:pointer; font-size:12px; box-shadow:0 2px 4px #000;" onclick="removeFile(${index})">×</div>
+                    `;
+                    container.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+            // 重置input值，否则重复选同一文件不会触发onchange
+            event.target.value = '';
+        }
+        // 移除指定文件（核心修复：纯数组操作，兼容所有端）
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            // 重新渲染预览
+            const container = document.getElementById('preview-container');
+            container.innerHTML = '';
+            selectedFiles.forEach((file, i) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.style = "position:relative; width:80px; height:80px;";
+                    div.innerHTML = `
+                        <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover; border-radius:8px; border:1px solid #ff4d4d;">
+                        <div style="position:absolute; top:-6px; right:-6px; background:#ff4d4d; color:white; border-radius:50%; width:22px; height:22px; text-align:center; line-height:22px; cursor:pointer; font-size:12px; box-shadow:0 2px 4px #000;" onclick="removeFile(${i})">×</div>
+                    `;
+                    container.appendChild(div);
                 };
                 reader.readAsDataURL(file);
             });
         }
 
         let postCounter = 0;
-        let commentCounter = 0; // 新增评论计数器
-        
-        // 定义一个全局变量来存放选中的文件
-let selectedFiles = [];
-
-// --- 函数 A：当用户选择文件时，生成预览图 ---
-function handleFileSelect(event) {
-    const container = document.getElementById('preview-container');
-    container.innerHTML = ''; // 清空旧预览
-    selectedFiles = Array.from(event.target.files); // 将 FileList 转为数组
-
-    selectedFiles.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const div = document.createElement('div');
-            div.style.position = 'relative';
-            div.innerHTML = `
-                <img src="${e.target.result}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; border:1px solid #ff4d4d;">
-                <div style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:20px; height:20px; text-align:center; line-height:20px; cursor:pointer; font-size:12px;" onclick="removeFile(${index})">×</div>
-            `;
-            container.appendChild(div);
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-// 辅助函数：移除某张不想发的图片
-function removeFile(index) {
-    selectedFiles.splice(index, 1);
-    // 重新渲染预览（简单处理：模拟一次选择）
-    const dt = new DataTransfer();
-    selectedFiles.forEach(file => dt.items.add(file));
-    document.getElementById('post-file').files = dt.files;
-    handleFileSelect({ target: { files: dt.files } });
-}
-
-// --- 函数 B：核心发布逻辑 ---
-async function addPost() {
-    const text = document.getElementById('post-text').value;
-    const fileInput = document.getElementById('post-file');
-    
-    // 如果没有文字也没有图片，直接返回
-    if (!text.trim() && selectedFiles.length === 0) {
-        alert("请输入内容或选择媒体文件");
-        return;
-    }
-
-    // --- 获取当前用户的随机昵称 ---
-    let nickname = localStorage.getItem('gem_user_id');
-    if (!nickname) {
-        const randomStr = Math.random().toString(36).substring(2, 6);
-        nickname = `粉丝_${randomStr}`;
-        localStorage.setItem('gem_user_id', nickname);
-    }
-
-    // 找到按钮并显示加载状态
-    const btn = document.querySelector('.publish-area .listen-btn');
-    const originalBtnText = btn.innerText;
-    btn.innerText = "正在上载至云端...";
-    btn.disabled = true;
-
-    let mediaUrls = [];
-
-    try {
-        // --- 1. 循环上传选中的所有文件 ---
-        for (const file of selectedFiles) {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-            const filePath = `uploads/${fileName}`;
-
-            const { data, error: uploadError } = await supabaseClient.storage
-                .from('posts_media')
-                .upload(filePath, file);
-
-            if (uploadError) throw uploadError;
-
-            // 获取公开访问链接 (注意这里的解构赋值 publicUrl)
-            const { data: { publicUrl } } = supabaseClient.storage
-                .from('posts_media')
-                .getPublicUrl(filePath);
-            
-            mediaUrls.push(publicUrl); 
+        let commentCounter = 0;
+        // 发布逻辑（核心修复：增加移动端容错，跳过无效文件）
+        async function addPost() {
+            const text = document.getElementById('post-text').value;
+            const fileInput = document.getElementById('post-file');
+            if (!text.trim() && selectedFiles.length === 0) {
+                alert("请输入内容或选择媒体文件");
+                return;
+            }
+            let nickname = localStorage.getItem('gem_user_id');
+            if (!nickname) {
+                const randomStr = Math.random().toString(36).substring(2, 6);
+                nickname = `粉丝_${randomStr}`;
+                localStorage.setItem('gem_user_id', nickname);
+            }
+            const btn = document.querySelector('.publish-area .listen-btn');
+            const originalBtnText = btn.innerText;
+            btn.innerText = "正在上载至云端...";
+            btn.disabled = true;
+            let mediaUrls = [];
+            try {
+                // 移动端容错：空文件直接返回空数组，跳过无效文件
+                if (selectedFiles.length === 0) mediaUrls = [];
+                for (const file of selectedFiles) {
+                    if (!file.name || !file.size) continue;
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+                    const filePath = `uploads/${fileName}`;
+                    const { data, error: uploadError } = await supabaseClient.storage
+                        .from('posts_media')
+                        .upload(filePath, file);
+                    if (uploadError) throw uploadError;
+                    const { data: { publicUrl } } = supabaseClient.storage
+                        .from('posts_media')
+                        .getPublicUrl(filePath);
+                    mediaUrls.push(publicUrl); 
+                }
+                const { error: dbError } = await supabaseClient
+                    .from('posts')
+                    .insert([{ 
+                        content: text, 
+                        media_urls: mediaUrls, 
+                        user_nickname: nickname 
+                    }]);
+                if (dbError) throw dbError;
+                alert("发布成功！");
+                document.getElementById('post-text').value = '';
+                fileInput.value = '';
+                document.getElementById('preview-container').innerHTML = '';
+                selectedFiles = []; 
+                location.reload();
+            } catch (err) {
+                console.error('发布过程出错:', err);
+                alert('发布失败：' + err.message);
+            } finally {
+                btn.innerText = originalBtnText;
+                btn.disabled = false;
+            }
         }
 
-        // --- 2. 将数据存入数据库 ---
-        const { error: dbError } = await supabaseClient
-            .from('posts')
-            .insert([{ 
-                content: text, 
-                media_urls: mediaUrls, // 存入图片链接数组
-                user_nickname: nickname 
-            }]);
+        // 获取帖子
+        async function fetchPosts() {
+            const { data: posts, error } = await supabaseClient
+                .from('posts')
+                .select('*')
+                .order('created_at', { ascending: false });
+            if (error) {
+                console.error('读取失败:', error);
+                return;
+            }
+            const container = document.getElementById('feed-container');
+            container.innerHTML = ''; 
+            posts.forEach(post => {
+                renderPostToUI(post, true); 
+            });
+        }
+        window.addEventListener('DOMContentLoaded', fetchPosts);
 
-        if (dbError) throw dbError;
-
-        // --- 3. 成功后的清理工作 ---
-        alert("发布成功！");
-        document.getElementById('post-text').value = '';
-        fileInput.value = '';
-        document.getElementById('preview-container').innerHTML = '';
-        selectedFiles = []; 
-        
-        // 刷新页面显示新帖子
-        location.reload();
-
-    } catch (err) {
-        console.error('发布过程出错:', err);
-        alert('发布失败：' + err.message);
-    } finally {
-        btn.innerText = originalBtnText;
-        btn.disabled = false;
-    }
-}
-
-    // 这个函数负责从 Supabase 下载所有的帖子
-/**
- * 从云端获取所有帖子并展示
- * 逻辑：按时间倒序排列（最新在前）
- */
-async function fetchPosts() {
-    const { data: posts, error } = await supabaseClient
-        .from('posts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        console.error('读取失败:', error);
-        return;
-    }
-
-    const container = document.getElementById('feed-container');
-    container.innerHTML = ''; 
-
-    posts.forEach(post => {
-        // 关键点：这里传入 true，表示初始加载，使用 appendChild
-        renderPostToUI(post, true); 
-    });
-}
-
-// 别忘了在页面一打开的时候就调用它，这样老帖子才会显示
-window.addEventListener('DOMContentLoaded', fetchPosts);
-
-
-
-/**
- * 渲染单个帖子到 UI
- * @param {Object} post - 从 Supabase 获取的帖子对象
- * @param {Boolean} isInitialLoad - 是否是初始化加载（默认 false）
- */
-function renderPostToUI(post, isInitialLoad = false) {
-    const container = document.getElementById('feed-container');
-    if (!container) return;
-
-    const postId = post.id; 
-    const newItem = document.createElement('div');
-    newItem.className = 'feed-item';
-    newItem.id = `post-${postId}`;
-
-    // 1. 处理图片/视频网格结构
-    let mediaHtml = '';
-    if (post.media_urls && Array.isArray(post.media_urls) && post.media_urls.length > 0) {
-        mediaHtml = `<div class="media-grid" data-count="${post.media_urls.length}">`;
-        post.media_urls.forEach((url, index) => {
-            const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.mov');
-            const mid = `media-${postId}-${index}`;
-            mediaHtml += `
-                <div class="media-container">
-                    ${!isVideo ? 
-                        `<img id="${mid}" src="${url}" onclick="openViewer('${url}')" loading="lazy">` : 
-                        `<video id="${mid}" src="${url}" controls></video>`
-                    }
-                    <div class="more-trigger" onclick="toggleDownload(event, '${postId}-${index}')">···</div>
-                    <div class="download-pop" id="pop-${postId}-${index}">
-                        <span onclick="downloadMedia('${mid}', 'GEM-resource')">💾 下载图片</span>
+        // 渲染帖子
+        function renderPostToUI(post, isInitialLoad = false) {
+            const container = document.getElementById('feed-container');
+            if (!container) return;
+            const postId = post.id; 
+            const newItem = document.createElement('div');
+            newItem.className = 'feed-item';
+            newItem.id = `post-${postId}`;
+            // 处理媒体网格
+            let mediaHtml = '';
+            if (post.media_urls && Array.isArray(post.media_urls) && post.media_urls.length > 0) {
+                mediaHtml = `<div class="media-grid" data-count="${post.media_urls.length}">`;
+                post.media_urls.forEach((url, index) => {
+                    const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.mov');
+                    const mid = `media-${postId}-${index}`;
+                    mediaHtml += `
+                        <div class="media-container">
+                            ${!isVideo ? 
+                                `<img id="${mid}" src="${url}" onclick="openViewer('${url}')" loading="lazy">` : 
+                                `<video id="${mid}" src="${url}" controls></video>`
+                            }
+                            <div class="more-trigger" onclick="toggleDownload(event, '${postId}-${index}')">···</div>
+                            <div class="download-pop" id="pop-${postId}-${index}">
+                                <span onclick="downloadMedia('${mid}', 'GEM-resource')">💾 下载图片</span>
+                            </div>
+                        </div>`;
+                });
+                mediaHtml += `</div>`;
+            }
+            // 权限判断
+            const currentUser = localStorage.getItem('gem_user_id');
+            const adminNickname = 'Admin_GEM_007';
+            const showDelete = (post.user_nickname === currentUser) || (currentUser === adminNickname);
+            const deleteBtnHtml = showDelete 
+                ? `<div class="delete-btn" onclick="deletePost('${postId}', '${post.user_nickname}')" title="删除动态">✕</div>` 
+                : '';
+            // 拼接HTML
+            newItem.innerHTML = `
+                ${deleteBtnHtml}
+                <div class="feed-user">
+                    <div class="feed-avatar">${(post.user_nickname || '匿').charAt(0)}</div>
+                    <div>
+                        <b>${post.user_nickname || '匿名粉丝'}</b>
+                        <div style="font-size:0.7rem; color:#888">${new Date(post.created_at).toLocaleString()}</div>
                     </div>
-                </div>`;
-        });
-        mediaHtml += `</div>`;
-    }
+                </div>
+                <div class="feed-content">${post.content || ''}</div>
+                ${mediaHtml}
+                <div class="action-bar">
+                    <div class="action-item" onclick="toggleComment('${postId}')">💬 评论</div>
+                    <div class="action-item" onclick="toggleLike(this, '${postId}')">
+                        ❤️ <span class="like-count">${post.likes || 0}</span>
+                    </div>
+                </div>
+                <div class="comment-section" id="comment-sec-${postId}" style="display:none">
+                    <div class="comment-list" id="comment-list-${postId}"></div>
+                    <div class="comment-input-wrap">
+                        <input type="text" id="input-${postId}" placeholder="写下你的回复...">
+                        <button class="comment-submit" onclick="addComment('${postId}')">发送</button>
+                    </div>
+                </div>
+            `;
+            // 插入逻辑
+            if (isInitialLoad) {
+                container.appendChild(newItem);
+            } else {
+                container.prepend(newItem);
+            }
+        }
 
-    // --- 权限判断逻辑 ---
-    const currentUser = localStorage.getItem('gem_user_id');
-    const adminNickname = 'Admin_GEM_007'; // 记得把这里改成你专属的名字
-    
-    // 只有作者本人或管理员才能看到删除按钮
-    const showDelete = (post.user_nickname === currentUser) || (currentUser === adminNickname);
-    const deleteBtnHtml = showDelete 
-        ? `<div class="delete-btn" onclick="deletePost('${postId}', '${post.user_nickname}')" title="删除动态">✕</div>` 
-        : '';
-
-    // 2. 拼接完整的卡片 HTML
-    newItem.innerHTML = `
-        ${deleteBtnHtml}
-        
-        <div class="feed-user">
-            <div class="feed-avatar">${(post.user_nickname || '匿').charAt(0)}</div>
-            <div>
-                <b>${post.user_nickname || '匿名粉丝'}</b>
-                <div style="font-size:0.7rem; color:#888">${new Date(post.created_at).toLocaleString()}</div>
-            </div>
-        </div>
-
-        <div class="feed-content">${post.content || ''}</div>
-        
-        ${mediaHtml}
-
-        <div class="action-bar">
-            <div class="action-item" onclick="toggleComment('${postId}')">💬 评论</div>
-            <div class="action-item" onclick="toggleLike(this, '${postId}')">
-                ❤️ <span class="like-count">${post.likes || 0}</span>
-            </div>
-        </div>
-
-        <div class="comment-section" id="comment-sec-${postId}" style="display:none">
-            <div class="comment-list" id="comment-list-${postId}"></div>
-            <div class="comment-input-wrap">
-                <input type="text" id="input-${postId}" placeholder="写下你的回复...">
-                <button class="comment-submit" onclick="addComment('${postId}')">发送</button>
-            </div>
-        </div>
-    `;
-
-    // --- 插入逻辑 ---
-    // 如果是页面初始化加载，按顺序 appendChild（数据库已经是降序了）
-    // 如果是刚发布的新帖子，使用 prepend 顶到最上面
-    if (isInitialLoad) {
-        container.appendChild(newItem);
-    } else {
-        container.prepend(newItem);
-    }
-}
-
-
-
-
-
-
-
+        // 下载弹窗切换
         function toggleDownload(e, id) {
             e.stopPropagation();
             const pop = document.getElementById('pop-' + id);
             document.querySelectorAll('.download-pop').forEach(p => { if(p !== pop) p.style.display = 'none'; });
             pop.style.display = pop.style.display === 'flex' ? 'none' : 'flex';
         }
-
         document.addEventListener('click', () => {
             document.querySelectorAll('.download-pop').forEach(p => p.style.display = 'none');
         });
 
+        // 点赞逻辑
         async function toggleLike(element, postId) {
-    const icon = element;
-    const countSpan = icon.querySelector('.like-count');
-    let currentLikes = parseInt(countSpan.innerText);
+            const icon = element;
+            const countSpan = icon.querySelector('.like-count');
+            let currentLikes = parseInt(countSpan.innerText);
+            if (icon.classList.contains('liked')) return;
+            try {
+                currentLikes++;
+                countSpan.innerText = currentLikes;
+                icon.style.color = '#ff4d4d';
+                icon.classList.add('liked');
+                const { error } = await supabaseClient
+                    .from('posts')
+                    .update({ likes: currentLikes })
+                    .eq('id', postId);
+                if (error) throw error;
+            } catch (err) {
+                console.error('点赞更新失败:', err);
+            }
+        }
 
-    // 1. 防止重复点赞（简单逻辑：点过一次就变色并禁用）
-    if (icon.classList.contains('liked')) return;
-
-    try {
-        // 2. 界面上先反馈（让用户感觉很快）
-        currentLikes++;
-        countSpan.innerText = currentLikes;
-        icon.style.color = '#ff4d4d'; // 变成红色
-        icon.classList.add('liked');
-
-        // 3. 同步到 Supabase 数据库
-        // 使用 .rpc (推荐) 或者 .update
-        const { error } = await supabaseClient
-            .from('posts')
-            .update({ likes: currentLikes })
-            .eq('id', postId);
-
-        if (error) throw error;
-
-    } catch (err) {
-        console.error('点赞更新失败:', err);
-        // 如果失败了，可以考虑把数字减回来
-    }
-}
-
-        // 修改：增加评论并支持删除
+        // 评论逻辑
         async function addComment(postId) {
-    const input = document.getElementById(`input-${postId}`);
-    const content = input.value.trim();
+            const input = document.getElementById(`input-${postId}`);
+            const content = input.value.trim();
+            if (!content) return;
+            const { data, error } = await supabaseClient
+                .from('comments')
+                .insert([{ 
+                    post_id: postId, 
+                    content: content 
+                }]);
+            if (error) {
+                alert("评论失败：" + error.message);
+            } else {
+                input.value = '';
+                fetchComments(postId);
+            }
+        }
 
-    if (!content) return;
+        // 获取评论
+        async function fetchComments(postId) {
+            const { data: comments, error } = await supabaseClient
+                .from('comments')
+                .select('*')
+                .eq('post_id', postId)
+                .order('created_at', { ascending: true });
+            if (!error) {
+                const list = document.getElementById(`comment-list-${postId}`);
+                list.innerHTML = ''; 
+                comments.forEach(comment => {
+                    const div = document.createElement('div');
+                    div.className = 'comment-item';
+                    div.id = `comment-${comment.id}`;
+                    div.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <span style="color: #00d2ff; font-size: 0.8rem;">粉丝: ${comment.content}</span>
+                            <span style="cursor: pointer; color: #ff4d4d; font-size: 0.7rem;" 
+                                  onclick="deleteComment(${comment.id})">删除</span>
+                        </div>
+                        <div style="font-size: 0.6rem; color: #666;">${new Date(comment.created_at).toLocaleString()}</div>
+                    `;
+                    list.appendChild(div);
+                });
+            }
+        }
 
-    // 1. 存入 Supabase 的 comments 表
-    const { data, error } = await supabaseClient
-        .from('comments')
-        .insert([{ 
-            post_id: postId, 
-            content: content 
-        }]);
-
-    if (error) {
-        alert("评论失败：" + error.message);
-    } else {
-        input.value = ''; // 清空输入框
-        fetchComments(postId); // 重新加载该帖子的评论列表
-    }
-}
-
-
-
-
-// 修改后的 fetchComments 里的渲染部分
-async function fetchComments(postId) {
-    const { data: comments, error } = await supabaseClient
-        .from('comments')
-        .select('*')
-        .eq('post_id', postId)
-        .order('created_at', { ascending: true });
-
-    if (!error) {
-        const list = document.getElementById(`comment-list-${postId}`);
-        list.innerHTML = ''; 
-        comments.forEach(comment => {
-            const div = document.createElement('div');
-            div.className = 'comment-item';
-            // 给评论添加一个唯一的 ID，方便删除时在网页上直接移除
-            div.id = `comment-${comment.id}`; 
-            div.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="color: #00d2ff; font-size: 0.8rem;">粉丝: ${comment.content}</span>
-                    <span style="cursor: pointer; color: #ff4d4d; font-size: 0.7rem;" 
-                          onclick="deleteComment(${comment.id})">删除</span>
-                </div>
-                <div style="font-size: 0.6rem; color: #666;">${new Date(comment.created_at).toLocaleString()}</div>
-            `;
-            list.appendChild(div);
-        });
-    }
-}
-
-
-     
-
-
-
-
-        // 新增：删除评论函数
+        // 删除评论
         async function deleteComment(commentId) {
-    if (!confirm('确定要删除这条评论吗？')) return;
-
-    try {
-        // 1. 从 Supabase 的 comments 表中删除
-        const { error } = await supabaseClient
-            .from('comments')
-            .delete()
-            .eq('id', commentId);
-
-        if (error) throw error;
-
-        // 2. 删除成功后，直接从页面上移除对应的 DOM 元素
-        const commentElement = document.getElementById(`comment-${commentId}`);
-        if (commentElement) {
-            commentElement.remove();
+            if (!confirm('确定要删除这条评论吗？')) return;
+            try {
+                const { error } = await supabaseClient
+                    .from('comments')
+                    .delete()
+                    .eq('id', commentId);
+                if (error) throw error;
+                const commentElement = document.getElementById(`comment-${commentId}`);
+                if (commentElement) {
+                    commentElement.remove();
+                }
+                console.log('评论已成功从云端删除');
+            } catch (err) {
+                console.error('删除评论失败:', err);
+                alert('删除失败：' + err.message);
+            }
         }
-        console.log('评论已成功从云端删除');
 
-    } catch (err) {
-        console.error('删除评论失败:', err);
-        alert('删除失败：' + err.message);
-    }
-}
-
+        // 切换评论区
         function toggleComment(postId) {
-    const sec = document.getElementById(`comment-sec-${postId}`);
-    if (sec.style.display === 'none' || sec.style.display === '') {
-        sec.style.display = 'block';
-        fetchComments(postId); // 展开时拉取云端评论
-    } else {
-        sec.style.display = 'none';
-    }
-}
-
-async function deletePost(id, postOwnerNickname) {
-    const currentUser = localStorage.getItem('gem_user_id');
-    const adminSecret = 'Admin_GEM_007'; // 必须和你设置的一致
-
-    if (currentUser !== postOwnerNickname && currentUser !== adminSecret) {
-        alert("这不是你发的，不可以删除哦~");
-        return;
-    }
-
-    if (!confirm('确定要永久删除这条动态吗？')) return;
-
-    try {
-        // 【核心修改】添加 .select() 这样可以知道数据库是否真的删除了行
-        const { data, error } = await supabaseClient
-            .from('posts')
-            .delete()
-            .eq('id', id)
-            .select(); 
-
-        if (error) throw error;
-
-        // 如果 data 数组长度为 0，说明 RLS 策略没通过，数据库拒绝了删除
-        if (!data || data.length === 0) {
-            alert('服务器拒绝了删除请求。请检查 Supabase 的 RLS 策略设置！');
-            return;
+            const sec = document.getElementById(`comment-sec-${postId}`);
+            if (sec.style.display === 'none' || sec.style.display === '') {
+                sec.style.display = 'block';
+                fetchComments(postId);
+            } else {
+                sec.style.display = 'none';
+            }
         }
 
-        // 只有数据库真的删了，才移除页面元素
-        const element = document.getElementById(`post-${id}`);
-        if (element) element.remove();
-        alert('已从云端永久删除');
+        // 删除帖子
+        async function deletePost(id, postOwnerNickname) {
+            const currentUser = localStorage.getItem('gem_user_id');
+            const adminSecret = 'Admin_GEM_007';
+            if (currentUser !== postOwnerNickname && currentUser !== adminSecret) {
+                alert("这不是你发的，不可以删除哦~");
+                return;
+            }
+            if (!confirm('确定要永久删除这条动态吗？')) return;
+            try {
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .delete()
+                    .eq('id', id)
+                    .select();
+                if (error) throw error;
+                if (!data || data.length === 0) {
+                    alert('服务器拒绝了删除请求。请检查 Supabase 的 RLS 策略设置！');
+                    return;
+                }
+                const element = document.getElementById(`post-${id}`);
+                if (element) element.remove();
+                alert('已从云端永久删除');
+            } catch (err) {
+                console.error('删除失败:', err);
+                alert('错误：' + err.message);
+            }
+        }
 
-    } catch (err) {
-        console.error('删除失败:', err);
-        alert('错误：' + err.message);
-    }
-}
-        
+        // 下载媒体
         function downloadMedia(mid, name) {
             const el = document.getElementById(mid);
             const a = document.createElement('a'); a.href = el.src; a.download = name; a.click();
         }
 
+        // 灯箱逻辑
+        function openViewer(url) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = url;
+            lightbox.style.display = 'flex';
+            setTimeout(() => {
+                lightbox.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closeViewer() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
 
-
-        // 打开灯箱
-function openViewer(url) {
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    
-    lightboxImg.src = url; // 设置图片路径
-    lightbox.style.display = 'flex'; // 显示容器
-    
-    // 延迟一丁点时间加上动画类，让弹出更顺滑
-    setTimeout(() => {
-        lightbox.classList.add('active');
-    }, 10);
-    
-    // 禁止页面滚动
-    document.body.style.overflow = 'hidden';
-}
-
-// 关闭灯箱
-function closeViewer() {
-    const lightbox = document.getElementById('lightbox');
-    lightbox.classList.remove('active');
-    lightbox.style.display = 'none';
-    
-    // 恢复页面滚动
-    document.body.style.overflow = 'auto';
-}
-
-        
-
+        // 返回顶部（补全原有未实现的函数）
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        // 监听滚动显示返回顶部按钮
+        window.addEventListener('scroll', () => {
+            const backBtn = document.getElementById('back-to-top');
+            if (window.scrollY > 300) {
+                backBtn.classList.add('show');
+            } else {
+                backBtn.classList.remove('show');
+            }
+        });
     </script>
 </body>
 </html>
