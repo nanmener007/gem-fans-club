@@ -468,6 +468,16 @@
         <img id="lightbox-img" src="" alt="放大图片">
     </div>
     <script>
+        // 终极兼容：阻止移动端默认唤起相机，强制打开相册
+document.addEventListener('click', e => {
+  if (e.target.closest('#post-file') || e.target.closest('.custom-file-btn')) {
+    e.preventDefault();
+    document.getElementById('post-file').click();
+  }
+}, true);
+
+
+
         // 获取或生成用户的唯一昵称
         function getUserId() {
             let userId = localStorage.getItem('gem_user_id');
