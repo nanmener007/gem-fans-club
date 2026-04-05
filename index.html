@@ -436,7 +436,8 @@
             <!-- 修复后的上传控件：增加capture="none"，优化样式 -->
             <div class="upload-controls">
                 <label for="post-file" class="custom-file-btn">📸 选择媒体 (最多9张)</label>
-                <input type="file" id="post-file" accept="image/*,video/*" multiple capture="none" onchange="handleFileSelect(event)" style="display:none;">
+                <!-- 替换publish-area里的上传input，只改这一行 -->
+<input type="file" id="post-file" accept="image/jpg,image/jpeg,image/png,image/gif,video/mp4" multiple webkitdirectory="false" onchange="handleFileSelect(event)" style="display:none;">
             </div>
             <div id="preview-container" style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;"></div>
             <button onclick="addPost()" class="listen-btn">发布动态</button>
@@ -468,16 +469,7 @@
         <img id="lightbox-img" src="" alt="放大图片">
     </div>
     <script>
-        // 终极兼容：阻止移动端默认唤起相机，强制打开相册
-document.addEventListener('click', e => {
-  if (e.target.closest('#post-file') || e.target.closest('.custom-file-btn')) {
-    e.preventDefault();
-    document.getElementById('post-file').click();
-  }
-}, true);
-
-
-
+        
         // 获取或生成用户的唯一昵称
         function getUserId() {
             let userId = localStorage.getItem('gem_user_id');
