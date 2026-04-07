@@ -527,7 +527,7 @@
             <textarea id="post-text" placeholder="分享关于 G.E.M. 的点滴..."></textarea>
             <div class="upload-controls">
                 <label for="post-file" class="custom-file-btn">📸 选择媒体 (最多9张)</label>
-                <input type="file" id="post-file" accept="image/*,video/*" multiple capture="none" onchange="handleFileSelect(event)" style="display:none;">
+                <input type="file" id="post-file" accept="image/*,video/*" multiple onchange="handleFileSelect(event)" style="display:none;">
             </div>
             <div id="preview-container" style="display:flex;gap:10px;margin:10px 0;flex-wrap:wrap;"></div>
             <button onclick="addPost()" class="listen-btn">发布动态</button>
