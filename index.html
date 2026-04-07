@@ -2,19 +2,60 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="referrer" content="no-referrer">
     <title>✨ G.E.M. 宇宙巅峰</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* --- 全局基础样式 --- */
+        /* ===================== 全局 ===================== */
         body {
             margin: 0; padding: 0;
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #050510; color: #fff; overflow-x: hidden;
         }
-        /* --- 第一页：斜切大封面 --- */
+
+        /* ===================== 顶部导航栏 ===================== */
+        #topnav {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 0 40px; height: 60px; box-sizing: border-box;
+            background: rgba(5, 5, 16, 0); backdrop-filter: blur(0px);
+            transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+        }
+        #topnav.scrolled {
+            background: rgba(5, 5, 16, 0.85);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.55); font-size: 0.8rem; letter-spacing: 3px;
+            text-decoration: none; padding: 6px 18px; border-radius: 20px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease; text-transform: uppercase; font-weight: 600;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #fff;
+            border-color: rgba(255, 0, 127, 0.6);
+            background: rgba(255, 0, 127, 0.1);
+            text-shadow: 0 0 10px rgba(255,0,127,0.5);
+        }
+
+        /* ===================== 滚动进度条 ===================== */
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+            background: linear-gradient(90deg, #ff007f, #7928ca, #00d2ff);
+            z-index: 1000; transition: width 0.08s linear;
+            box-shadow: 0 0 8px rgba(255,0,127,0.6);
+        }
+
+        /* ===================== Scroll Reveal ===================== */
+        .reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* ===================== 第一页：封面 ===================== */
         .welcome-screen {
             position: relative; width: 100%; height: 100vh;
             display: flex; overflow: hidden; background: #000;
@@ -31,24 +72,86 @@
             position: absolute; left: 0; width: 70%; height: 100%;
             background: linear-gradient(to right, transparent 50%, #000), url('images/gem-bg-large.jpg') center/cover no-repeat;
             clip-path: polygon(0 0, 100% 0, 80% 100%, 0% 100%); z-index: 1;
-            animation: slideFromLeft 1.5s ease-out forwards;
+            opacity: 0;
+            animation: slideFromLeft 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0s forwards;
         }
         .right-honor {
             position: absolute; right: 0; width: 45%; height: 100%;
             display: flex; flex-direction: column; justify-content: center;
             padding-right: 5%; z-index: 10; text-align: right;
-            animation: slideFromRight 1.5s ease-out forwards;
+            opacity: 0;
+            animation: slideFromRight 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
         }
         .honor-title {
             font-size: 3rem; font-weight: 900; margin: 0;
             background: linear-gradient(to bottom, #fff 40%, #444);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             line-height: 1.1; letter-spacing: 4px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 1.4s forwards;
         }
         .honor-list { list-style: none; padding: 0; margin-top: 40px; }
+        .honor-list li { opacity: 0; animation: fadeInUp 0.6s ease forwards; }
+        .honor-list li:nth-child(1) { animation-delay: 1.8s; }
+        .honor-list li:nth-child(2) { animation-delay: 2.1s; }
+        .honor-list li:nth-child(3) { animation-delay: 2.4s; }
         .honor-list .num { display: block; font-size: 2.8rem; font-weight: bold; color: #ff007f; text-shadow: 0 0 20px rgba(255, 0, 127, 0.6); }
         .honor-list .text { font-size: 1rem; color: #888; letter-spacing: 2px; }
-        /* --- 第二页：专辑网格 --- */
+
+        /* 扫描光线 */
+        .scan-line {
+            position: absolute; top: -100%; left: 0; width: 100%; height: 60px;
+            background: linear-gradient(to bottom, transparent, rgba(255,0,127,0.15), rgba(255,255,255,0.08), rgba(255,0,127,0.15), transparent);
+            z-index: 5; pointer-events: none;
+            animation: scanDown 3s ease-in-out 0.5s forwards;
+        }
+        /* 粒子画布 */
+        #welcome-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; pointer-events: none;
+        }
+        /* 光晕脉冲 */
+        .glow-orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+        .glow-orb-1 { width: 400px; height: 400px; background: rgba(255,0,127,0.18); top: -100px; left: -100px; animation: orbPulse 4s ease-in-out infinite alternate; }
+        .glow-orb-2 { width: 300px; height: 300px; background: rgba(121,40,202,0.2); bottom: -80px; right: 5%; animation: orbPulse 5s ease-in-out 1s infinite alternate; }
+
+        /* ===================== @keyframes ===================== */
+        @keyframes slideFromLeft {
+            from { transform: translateX(-60px); opacity: 0; }
+            to   { transform: translateX(0);     opacity: 1; }
+        }
+        @keyframes slideFromRight {
+            from { transform: translateX(60px); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        @keyframes scanDown {
+            0%   { top: -10%; opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 1; }
+            100% { top: 110%; opacity: 0; }
+        }
+        @keyframes orbPulse {
+            from { transform: scale(1);   opacity: 0.6; }
+            to   { transform: scale(1.3); opacity: 1;   }
+        }
+        @keyframes floatLyrics {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-15px); }
+        }
+        @keyframes rotateLP {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        @keyframes gridMove {
+            from { background-position: 0 0; }
+            to   { background-position: 0 60px; }
+        }
+
+        /* ===================== 第二页：专辑网格 ===================== */
         .main-content {
             padding: 100px 5%;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -59,108 +162,111 @@
             gap: 25px; width: 100%; max-width: 1200px;
         }
         .album-card {
-            background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
+            background: rgba(255,255,255,0.07); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
             padding: 20px 15px; text-align: center; transition: all 0.4s ease;
+            position: relative; overflow: hidden;
         }
-        .album-card:hover { transform: translateY(-10px); border-color: #ff007f; box-shadow: 0 15px 30px rgba(255, 0, 127, 0.2); }
-        .album-cover { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #222; object-fit: cover; transition: transform 0.8s; }
-        .album-card:hover .album-cover { transform: rotate(360deg); }
+        .album-card::before {
+            content: ''; position: absolute; inset: 0; border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255,0,127,0.15), rgba(121,40,202,0.1));
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        .album-card:hover::before { opacity: 1; }
+        .album-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: #ff007f;
+            box-shadow: 0 0 0 1px rgba(255,0,127,0.3), 0 20px 40px rgba(255,0,127,0.25), 0 0 30px rgba(255,0,127,0.1);
+        }
+        .album-cover {
+            width: 140px; height: 140px; border-radius: 50%; border: 4px solid #222;
+            object-fit: cover; transition: transform 0.8s ease, box-shadow 0.4s ease;
+        }
+        .album-card:hover .album-cover {
+            transform: rotate(360deg);
+            box-shadow: 0 0 25px rgba(255,0,127,0.5), 0 0 50px rgba(255,0,127,0.2);
+            border-color: #ff007f;
+        }
+        .album-title {
+            margin: 12px 0 8px; font-size: 0.95rem; font-weight: 600;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .album-card:hover .album-title {
+            color: #ff007f;
+            text-shadow: 0 0 12px rgba(255,0,127,0.6);
+        }
         .listen-btn {
             background: linear-gradient(45deg, #ff007f, #7928ca); color: white;
             padding: 8px 20px; border-radius: 20px; font-size: 0.8rem; border: none; cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            position: relative; z-index: 1;
         }
-        /* --- 第三页：歌词墙 --- */
+        .listen-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 20px rgba(255,0,127,0.5);
+        }
+
+        /* ===================== 第三页：歌词墙 ===================== */
         .lyrics-universe {
             padding: 100px 5%; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
             min-height: 100vh; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;
         }
-        .lyrics-container { 
-            position: relative; 
-            width: 100%; 
-            max-width: 1100px; 
-            height: 650px; 
-            margin-top: 50px; 
+        .lyrics-container {
+            position: relative; width: 100%; max-width: 1100px; height: 650px; margin-top: 50px;
         }
-        .lyric-card { 
-            position: absolute; 
-            padding: 15px 25px; 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 15px; 
-            border: 1px solid rgba(255, 0, 127, 0.3); 
-            animation: floatLyrics 6s ease-in-out infinite; 
-            white-space: nowrap;
+        .lyric-card {
+            position: absolute; padding: 15px 25px;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px; border: 1px solid rgba(255,0,127,0.3);
+            animation: floatLyrics 6s ease-in-out infinite; white-space: nowrap;
         }
-        /* --- 第四页：高级感留言板 --- */
+
+        /* ===================== 第四页：留言板 ===================== */
         .fan-board {
-            padding: 100px 5%;
-            background: #050510;
+            padding: 100px 5%; background: #050510;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;
         }
         .fan-board::before {
-            content: "";
-            position: absolute;
-            top: 0; left: -50%; width: 200%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px);
+            content: ""; position: absolute; top: 0; left: -50%; width: 200%; height: 100%;
+            background-image: linear-gradient(rgba(0,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.08) 1px, transparent 1px);
             background-size: 60px 60px;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px);
-            transform-origin: top;
-            animation: gridMove 15s linear infinite;
-            z-index: 0;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px); transform-origin: top;
+            animation: gridMove 15s linear infinite; z-index: 0;
         }
         .fan-board::after {
-            content: "";
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 40%;
-            background: linear-gradient(to top, rgba(121, 40, 202, 0.2), transparent);
+            content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 40%;
+            background: linear-gradient(to top, rgba(121,40,202,0.2), transparent);
             z-index: 0; pointer-events: none;
         }
         .publish-area {
             position: relative; z-index: 1; width: 100%; max-width: 800px;
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(30px) saturate(150%);
-            -webkit-backdrop-filter: blur(30px) saturate(150%);
-            padding: 30px; border-radius: 24px; 
-            border: 1px solid rgba(0, 255, 255, 0.2); 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            margin-bottom: 60px; display: flex; flex-direction: column;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(30px) saturate(150%); -webkit-backdrop-filter: blur(30px) saturate(150%);
+            padding: 30px; border-radius: 24px; border: 1px solid rgba(0,255,255,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 60px; display: flex; flex-direction: column;
         }
-        .publish-area textarea { 
-            width: 100%; height: 100px; background: transparent; border: none; 
-            color: white; font-size: 1.1rem; outline: none; resize: none; 
-            box-sizing: border-box;
+        .publish-area textarea {
+            width: 100%; height: 100px; background: transparent; border: none;
+            color: white; font-size: 1.1rem; outline: none; resize: none; box-sizing: border-box;
         }
         .input-controls {
             display: flex; justify-content: space-between; align-items: center;
             margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);
         }
-        
         .feed-container { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 25px; z-index: 1; }
         .feed-item {
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 20px; padding: 25px; 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.08);
+            position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .media-grid {
-            display: grid; gap: 8px; margin-top: 15px; width: 100%; max-width: 500px;
-        }
+        .media-grid { display: grid; gap: 8px; margin-top: 15px; width: 100%; max-width: 500px; }
         .media-grid[data-count="1"] { grid-template-columns: 1fr; }
         .media-grid[data-count="2"], .media-grid[data-count="4"] { grid-template-columns: 1fr 1fr; width: 340px; }
-        .media-grid[data-count="3"], .media-grid[data-count="5"], .media-grid[data-count="6"], 
+        .media-grid[data-count="3"], .media-grid[data-count="5"], .media-grid[data-count="6"],
         .media-grid[data-count="7"], .media-grid[data-count="8"], .media-grid[data-count="9"] { grid-template-columns: repeat(3, 1fr); }
         .media-container { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
         .media-container img, .media-container video { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
-        
-        .more-trigger { 
-            position: absolute; bottom: 5px; right: 5px; 
+        .more-trigger {
+            position: absolute; bottom: 5px; right: 5px;
             background: rgba(0,0,0,0.6); color: white; width: 24px; height: 24px;
             border-radius: 4px; display: flex; align-items: center; justify-content: center;
             cursor: pointer; opacity: 0.8; transition: 0.3s; z-index: 10; font-size: 12px;
@@ -175,16 +281,11 @@
         .action-item.liked { color: #ff007f; }
         .comment-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); display: none; }
         .comment-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-        
-        /* 评论删除按钮样式修改 */
         .comment-item {
-            background: rgba(255, 255, 255, 0.03); padding: 10px 15px; border-radius: 10px; font-size: 0.9rem;
-            border-left: 2px solid #00ffff;
-            position: relative; display: flex; justify-content: space-between; align-items: flex-start;
+            background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 10px; font-size: 0.9rem;
+            border-left: 2px solid #00ffff; position: relative; display: flex; justify-content: space-between; align-items: flex-start;
         }
-        .del-comment-icon {
-            color: #555; cursor: pointer; font-size: 0.8rem; opacity: 0; transition: 0.3s; padding-left: 10px;
-        }
+        .del-comment-icon { color: #555; cursor: pointer; font-size: 0.8rem; opacity: 0; transition: 0.3s; padding-left: 10px; }
         .comment-item:hover .del-comment-icon { opacity: 1; }
         .del-comment-icon:hover { color: #ff4d4d; }
         .comment-input-wrap { display: flex; gap: 10px; margin-top: 10px; }
@@ -205,26 +306,122 @@
         .feed-user { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .feed-avatar { width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(45deg, #00ffff, #7928ca); display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .feed-content { line-height: 1.6; color: #eee; font-size: 1.05rem; }
-        /* --- 播放器与大图查看器叠加层 --- */
-        #player-overlay, #img-viewer { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(25px); 
-            z-index: 1000; display: none; align-items: center; justify-content: center; 
+
+        /* ===================== 播放器叠加层 ===================== */
+        #player-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(25px);
+            z-index: 1000; display: none; align-items: center; justify-content: center;
         }
-        #img-viewer img { max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .player-container { display: flex; align-items: center; gap: 50px; width: 90%; max-width: 1100px; position: relative; }
-        .close-player, .close-viewer { position: absolute; top: -40px; right: 0; font-size: 2rem; cursor: pointer; color: #fff; }
+        .close-player { position: absolute; top: -40px; right: 0; font-size: 2rem; cursor: pointer; color: #fff; }
         .vinyl-disc { width: 300px; height: 300px; border-radius: 50%; border: 10px solid #111; background-size: cover; animation: rotateLP 6s linear infinite; }
         iframe { width: 600px; height: 400px; border-radius: 15px; }
-        /* --- 移动端预览图适配（核心新增）--- */
-        @media (max-width:768px) {
-            #preview-container {
-                gap:8px !important;
-            }
-            #preview-container div {
-                width:70px !important;
-                height:70px !important;
-            }
+
+        /* ===================== 返回顶部 ===================== */
+        #back-to-top {
+            position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
+            background: linear-gradient(135deg, #ff0080, #7928ca); color: white; border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000;
+            transition: all 0.3s ease; opacity: 0; visibility: hidden;
+        }
+        #back-to-top:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(255,0,128,0.4); }
+        #back-to-top.show { opacity: 1; visibility: visible; }
+
+        /* ===================== 昵称设置弹窗 ===================== */
+        #nickname-modal {
+            position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: center;
+        }
+        #nickname-modal.hidden { display: none; }
+        .nickname-box {
+            background: linear-gradient(135deg, #0f0c29, #1a1040);
+            border: 1px solid rgba(255,0,127,0.4); border-radius: 24px;
+            padding: 40px 36px; width: 340px; text-align: center;
+            box-shadow: 0 0 60px rgba(255,0,127,0.2), 0 20px 40px rgba(0,0,0,0.6);
+            animation: fadeInUp 0.4s ease;
+        }
+        .nickname-box h2 {
+            margin: 0 0 8px; font-size: 1.4rem;
+            background: linear-gradient(90deg, #ff007f, #7928ca);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nickname-box p { color: #888; font-size: 0.85rem; margin: 0 0 24px; }
+        .nickname-input {
+            width: 100%; box-sizing: border-box;
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,0,127,0.3);
+            border-radius: 12px; padding: 12px 16px; color: #fff;
+            font-size: 1rem; outline: none; text-align: center;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .nickname-input:focus { border-color: #ff007f; box-shadow: 0 0 12px rgba(255,0,127,0.3); }
+        .nickname-confirm {
+            margin-top: 20px; width: 100%; padding: 12px;
+            background: linear-gradient(45deg, #ff007f, #7928ca);
+            border: none; border-radius: 12px; color: #fff;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+        .nickname-confirm:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,0,127,0.4); }
+        .nickname-hint { margin-top: 14px; font-size: 0.75rem; color: #555; }
+        .nickname-hint span { color: #ff007f; cursor: pointer; }
+        .nickname-hint span:hover { text-decoration: underline; }
+        .feed-nickname-tag {
+            display: inline-block; margin-left: 8px; font-size: 0.7rem; color: #ff007f; cursor: pointer;
+            border: 1px solid rgba(255,0,127,0.3); border-radius: 10px; padding: 1px 8px; transition: background 0.2s;
+        }
+        .feed-nickname-tag:hover { background: rgba(255,0,127,0.15); }
+
+        /* ===================== 统一灯箱（翻页）===================== */
+        #unified-lightbox {
+            position: fixed; inset: 0; z-index: 3000;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(16px);
+            display: none; align-items: center; justify-content: center;
+        }
+        #unified-lightbox.active { display: flex; }
+        #unified-lightbox img {
+            max-width: 88vw; max-height: 88vh; border-radius: 10px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            transform: scale(0.92); opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        #unified-lightbox.active img { transform: scale(1); opacity: 1; }
+        .lb-close {
+            position: absolute; top: 20px; right: 28px;
+            font-size: 2.2rem; color: #fff; cursor: pointer; opacity: 0.7;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .lb-close:hover { opacity: 1; transform: rotate(90deg); }
+        .lb-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            font-size: 2.5rem; color: #fff; cursor: pointer;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            width: 52px; height: 52px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, transform 0.2s; user-select: none;
+        }
+        .lb-arrow:hover { background: rgba(255,0,127,0.3); transform: translateY(-50%) scale(1.1); }
+        .lb-arrow.prev { left: 20px; }
+        .lb-arrow.next { right: 20px; }
+        .lb-arrow.hidden { opacity: 0; pointer-events: none; }
+        .lb-counter {
+            position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+            font-size: 0.85rem; color: rgba(255,255,255,0.5); letter-spacing: 2px;
+        }
+
+        /* ===================== 上传控件 ===================== */
+        .upload-controls { margin-bottom: 10px; display: flex; align-items: center; }
+        .custom-file-btn {
+            cursor: pointer; color: #00ffff; display: flex; align-items: center;
+            gap: 8px; padding: 6px 12px; border: 1px solid #00ffff; border-radius: 20px; font-size: 0.9rem;
+        }
+
+        /* ===================== 移动端适配 ===================== */
+        @media (max-width: 768px) {
+            #preview-container { gap: 8px !important; }
+            #preview-container div { width: 70px !important; height: 70px !important; }
             .welcome-screen { flex-direction: column; }
             .left-hero, .right-honor { position: relative; width: 100%; clip-path: none; height: 50vh; text-align: center; padding: 0; }
             .lyrics-container { height: auto; display: flex; flex-direction: column; gap: 15px; }
@@ -233,96 +430,32 @@
             .player-container { flex-direction: column; gap: 20px; }
             .media-grid { max-width: 100%; }
         }
-       
-        #back-to-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #ff0080, #7928ca); /* 紫粉渐变 */
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    transition: all 0.3s ease;
-    opacity: 0; /* 默认隐藏 */
-    visibility: hidden;
-}
-#back-to-top:hover {
-    transform: translateY(-5px); /* 悬停微动 */
-    box-shadow: 0 6px 20px rgba(255, 0, 128, 0.4);
-}
-/* 当页面滚动后显示按钮 */
-#back-to-top.show {
-    opacity: 1;
-    visibility: visible;
-}
-/* 灯箱容器 */
-#lightbox {
-    display: none; /* 默认隐藏 */
-    position: fixed;
-    z-index: 9999; /* 确保在最顶层 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9); /* 半透明黑底 */
-    justify-content: center;
-    align-items: center;
-    cursor: zoom-out;
-    backdrop-filter: blur(5px); /* 背景模糊，增加高级感 */
-}
-/* 灯箱里的图片 */
-#lightbox-img {
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-    transform: scale(0.8); /* 初始缩小一点，配合动画 */
-    transition: transform 0.3s ease;
-}
-/* 显示时的动画 */
-#lightbox.active #lightbox-img {
-    transform: scale(1);
-}
-/* 关闭按钮 */
-.close-btn {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    color: white;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-}
-        /* 上传控件样式（核心新增） */
-        .upload-controls {
-            margin-bottom:10px; 
-            display:flex;
-            align-items:center;
-        }
-        .custom-file-btn {
-            cursor:pointer; 
-            color:#00ffff; 
-            display:flex;
-            align-items:center;
-            gap:8px; 
-            padding:6px 12px; 
-            border:1px solid #00ffff; 
-            border-radius:20px; 
-            font-size:0.9rem;
-        }
+
+        /* ===================== 灯箱（旧版兼容，已被统一灯箱取代）===================== */
+        #lightbox { display: none; }
     </style>
 </head>
 <body>
-    <section class="welcome-screen">
-        <div class="top-left-avatar">
+
+    <!-- 滚动进度条 -->
+    <div id="scroll-progress"></div>
+
+    <!-- 顶部导航栏 -->
+    <nav id="topnav">
+        <a class="nav-link active" href="#home">HOME</a>
+        <a class="nav-link" href="#albums">ALBUMS</a>
+        <a class="nav-link" href="#lyrics">LYRICS</a>
+        <a class="nav-link" href="#fanboard">FAN BOARD</a>
+    </nav>
+
+    <!-- ===== 第一页：封面 ===== -->
+    <section class="welcome-screen" id="home">
+        <canvas id="welcome-canvas"></canvas>
+        <div class="scan-line"></div>
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+
+        <div class="top-left-avatar" style="opacity:0; animation: fadeInUp 0.6s ease 2.6s forwards;">
             <img src="images/gem-avatar.jpg" alt="Logo">
             <span style="font-weight: bold;">G.E.M. DIGITAL</span>
         </div>
@@ -330,561 +463,568 @@
         <div class="right-honor">
             <h1 class="honor-title">LEGENDARY<br>MOMENTS</h1>
             <ul class="honor-list">
-                <li><span class="num">200,000,000+</span><span class="text">YOUTUBE 播放纪录</span></li>
-                <li><span class="num">140+</span><span class="text">全球巡回演唱会</span></li>
-                <li><span class="num">NO.1</span><span class="text">华语全创作天后</span></li>
+                <li>
+                    <span class="num" data-target="200000000" data-suffix="+" data-format="short">0</span>
+                    <span class="text">YOUTUBE 播放纪录</span>
+                </li>
+                <li>
+                    <span class="num" data-target="140" data-suffix="+">0</span>
+                    <span class="text">全球巡回演唱会</span>
+                </li>
+                <li>
+                    <span class="num">NO.1</span>
+                    <span class="text">华语全创作天后</span>
+                </li>
             </ul>
         </div>
     </section>
-    <main class="main-content">
-        <h1 style="text-shadow: 0 0 10px #00ffff; margin-bottom: 50px;">ALBUMS COLLECTION</h1>
+
+    <!-- ===== 第二页：专辑网格 ===== -->
+    <main class="main-content" id="albums">
+        <h1 style="text-shadow: 0 0 10px #00ffff; margin-bottom: 50px;" class="reveal">ALBUMS COLLECTION</h1>
         <div class="album-grid">
-            <div class="album-card">
-                <img src="images/album1.jpg" class="album-cover">
-                <div class="album-title">冰河时代</div>
-                <button class="listen-btn" onclick="openPlayer('冰河时代', 'images/album1.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=114607880471878&bvid=BV1By7zzqEV6&cid=30303846414&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album2.jpg" class="album-cover">
-                <div class="album-title">摩天动物园</div>
-                <button class="listen-btn" onclick="openPlayer('摩天动物园', 'images/album2.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=881098889&bvid=BV19K4y1B7eF&cid=1405747369&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album3.jpg" class="album-cover">
-                <div class="album-title">唯一</div>
-                <button class="listen-btn" onclick="openPlayer('唯一', 'images/album3.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=114574158267780&bvid=BV1T3jmzuEma&cid=30185359702&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album4.jpg" class="album-cover">
-                <div class="album-title">灰狼</div>
-                <button class="listen-btn" onclick="openPlayer('灰狼', 'images/album4.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=113708604854093&bvid=BV1JTkZYkEAq&cid=27512277647&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album5.jpg" class="album-cover">
-                <div class="album-title">透明</div>
-                <button class="listen-btn" onclick="openPlayer('透明', 'images/album5.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=1201468421&bvid=BV1uF4m1V72Y&cid=1459264591&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album6.jpg" class="album-cover">
-                <div class="album-title">于是</div>
-                <button class="listen-btn" onclick="openPlayer('于是', 'images/album6.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=114530554216698&bvid=BV1BKEmzbEhe&cid=30031286256&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album7.jpg" class="album-cover">
-                <div class="album-title">再见</div>
-                <button class="listen-btn" onclick="openPlayer('再见', 'images/album7.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=114014822597483&bvid=BV18SwUeDEoh&cid=28425847216&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album8.jpg" class="album-cover">
-                <div class="album-title">倒流时间</div>
-                <button class="listen-btn" onclick="openPlayer('倒流时间', 'images/album8.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=113764271656024&bvid=BV1pu6SYHEAB&cid=27678016922&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album9.jpg" class="album-cover">
-                <div class="album-title">Fly Away</div>
-                <button class="listen-btn" onclick="openPlayer('Fly Away', 'images/album9.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=966699087&bvid=BV1uW4y1c7Jg&cid=1479219198&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album10.jpg" class="album-cover">
-                <div class="album-title">Hell</div>
-                <button class="listen-btn" onclick="openPlayer('Hell', 'images/album10.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=113808932604586&bvid=BV1sCcFeqE42&cid=27833860535&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album11.jpg" class="album-cover">
-                <div class="album-title">Give me GEM</div>
-                <button class="listen-btn" onclick="openPlayer('Give me GEM', 'images/album11.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=1106100504&bvid=BV1mw4m1a7iB&cid=1603644441&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album12.jpg" class="album-cover">
-                <div class="album-title">超能力</div>
-                <button class="listen-btn" onclick="openPlayer('超能力', 'images/album12.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=114253210058889&bvid=BV1gPZkYWEJq&cid=29152905337&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album13.jpg" class="album-cover">
-                <div class="album-title">天空没有极限</div>
-                <button class="listen-btn" onclick="openPlayer('天空没有极限', 'images/album13.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=881431669&bvid=BV1RK4y1q7A1&cid=1412120699&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album14.jpg" class="album-cover">
-                <div class="album-title">海阔天空</div>
-                <button class="listen-btn" onclick="openPlayer('海阔天空', 'images/album14.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=113985915453916&bvid=BV1j4N6eLEeR&cid=28347664201&p=1')">WATCH MV</button>
-            </div>
-            <div class="album-card">
-                <img src="images/album15.jpg" class="album-cover">
-                <div class="album-title">差不多姑娘</div>
-                <button class="listen-btn" onclick="openPlayer('差不多姑娘', 'images/album15.jpg', 'https://player.bilibili.com/player.html?isOutside=true&aid=114162243994858&bvid=BV1wtQrY4ECB&cid=28868087713&p=1')">WATCH MV</button>
-            </div>
+            <div class="album-card reveal"><img src="images/album1.jpg" class="album-cover"><div class="album-title">冰河时代</div><button class="listen-btn" onclick="openPlayer('冰河时代','images/album1.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114607880471878&bvid=BV1By7zzqEV6&cid=30303846414&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album2.jpg" class="album-cover"><div class="album-title">摩天动物园</div><button class="listen-btn" onclick="openPlayer('摩天动物园','images/album2.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=881098889&bvid=BV19K4y1B7eF&cid=1405747369&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album3.jpg" class="album-cover"><div class="album-title">唯一</div><button class="listen-btn" onclick="openPlayer('唯一','images/album3.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114574158267780&bvid=BV1T3jmzuEma&cid=30185359702&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album4.jpg" class="album-cover"><div class="album-title">灰狼</div><button class="listen-btn" onclick="openPlayer('灰狼','images/album4.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113708604854093&bvid=BV1JTkZYkEAq&cid=27512277647&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album5.jpg" class="album-cover"><div class="album-title">透明</div><button class="listen-btn" onclick="openPlayer('透明','images/album5.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=1201468421&bvid=BV1uF4m1V72Y&cid=1459264591&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album6.jpg" class="album-cover"><div class="album-title">于是</div><button class="listen-btn" onclick="openPlayer('于是','images/album6.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114530554216698&bvid=BV1BKEmzbEhe&cid=30031286256&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album7.jpg" class="album-cover"><div class="album-title">再见</div><button class="listen-btn" onclick="openPlayer('再见','images/album7.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114014822597483&bvid=BV18SwUeDEoh&cid=28425847216&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album8.jpg" class="album-cover"><div class="album-title">倒流时间</div><button class="listen-btn" onclick="openPlayer('倒流时间','images/album8.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113764271656024&bvid=BV1pu6SYHEAB&cid=27678016922&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album9.jpg" class="album-cover"><div class="album-title">Fly Away</div><button class="listen-btn" onclick="openPlayer('Fly Away','images/album9.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=966699087&bvid=BV1uW4y1c7Jg&cid=1479219198&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album10.jpg" class="album-cover"><div class="album-title">Hell</div><button class="listen-btn" onclick="openPlayer('Hell','images/album10.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113808932604586&bvid=BV1sCcFeqE42&cid=27833860535&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album11.jpg" class="album-cover"><div class="album-title">Give me GEM</div><button class="listen-btn" onclick="openPlayer('Give me GEM','images/album11.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=1106100504&bvid=BV1mw4m1a7iB&cid=1603644441&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album12.jpg" class="album-cover"><div class="album-title">超能力</div><button class="listen-btn" onclick="openPlayer('超能力','images/album12.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114253210058889&bvid=BV1gPZkYWEJq&cid=29152905337&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album13.jpg" class="album-cover"><div class="album-title">天空没有极限</div><button class="listen-btn" onclick="openPlayer('天空没有极限','images/album13.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=881431669&bvid=BV1RK4y1q7A1&cid=1412120699&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album14.jpg" class="album-cover"><div class="album-title">海阔天空</div><button class="listen-btn" onclick="openPlayer('海阔天空','images/album14.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113985915453916&bvid=BV1j4N6eLEeR&cid=28347664201&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album15.jpg" class="album-cover"><div class="album-title">差不多姑娘</div><button class="listen-btn" onclick="openPlayer('差不多姑娘','images/album15.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114162243994858&bvid=BV1wtQrY4ECB&cid=28868087713&p=1')">WATCH MV</button></div>
         </div>
     </main>
-    <section class="lyrics-universe">
-        <h1 style="text-shadow: 0 0 15px #ff007f;">LYRICS UNIVERSE</h1>
+
+    <!-- ===== 第三页：歌词墙 ===== -->
+    <section class="lyrics-universe" id="lyrics">
+        <h1 style="text-shadow: 0 0 15px #ff007f;" class="reveal">LYRICS UNIVERSE</h1>
         <div class="lyrics-container">
-            <div class="lyric-card" style="top: 10%; left: 5%;">“全宇宙只有你懂我，我也只要你懂我。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《懂得》</span></div>
-            <div class="lyric-card" style="top: 15%; left: 58%; animation-delay: 1s;">“缘分让我们相遇乱世以外，命运却要我们危难中相爱。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《光年之外》</span></div>
-            <div class="lyric-card" style="top: 40%; left: 8%; animation-delay: 2s;">“我跌跌撞撞，直到遇见你。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《句号》</span></div>
-            <div class="lyric-card" style="top: 70%; left: 52%; animation-delay: 1.5s;">“只要有你，我就有勇气，再去面对这个世界。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《新的心跳》</span></div>
-            <div class="lyric-card" style="top: 5%; left: 32%; animation-delay: 0.5s;">“在那遥远的地方，有一颗恒星，它的名字叫 Gloria。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《启示录》</span></div>
-            <div class="lyric-card" style="top: 65%; left: 2%; animation-delay: 0.8s;">“我能习惯远距离 爱总是身不由己。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《多远都要在一起》</span></div>
-            <div class="lyric-card" style="top: 80%; left: 22%; animation-delay: 1.2s;">“我徘徊在爱你 还是爱自己的十字。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《透明》</span></div>
-            <div class="lyric-card" style="top: 45%; left: 50%; animation-delay: 0.3s;">“小王子爱着玫瑰 每天浇水 却不能体会 玫瑰其实憔悴。” <span style="display:block; font-size:0.8rem; color:#ff007f; margin-top:8px; text-align:right;">—《寂寞星球的玫瑰》</span></div>
+            <div class="lyric-card reveal" style="top:10%;left:5%;">"全宇宙只有你懂我，我也只要你懂我。"<span style="display:block;font-size:0.8rem;color:#ff007f;margin-top:8px;text-align:right;">—《懂得》</span></div>
+            <div class="lyric-card reveal" style="top:15%;left:58%;animation-delay:1s;">"缘分让我们相遇乱世以外，命运却要我们危难中相爱。"<span style="display:block;font-size:0.8rem;color:#ff007f;margin-top:8px;text-align:right;">—《光年之外》</span></div>
+            <div class="lyric-card reveal" style="top:40%;left:8%;animation-delay:2s;">"我跌跌撞撞，直到遇见你。"<span style="display:block;font-size:0.8rem;color:#ff007f;margin-top:8px;text-align:right;">—《句号》</span></div>
+            <div class="lyric-card reveal" style="top:70%;left:52%;animation-delay:1.5s;">"只要有你，我就有勇气，再去面对这个世界。"<span style="display:block;font-size:0.8rem;color:#ff007f;margin-top:8px;text-align:right;">—《新的心跳》</span></div>
+            <div class="lyric-card reveal" style="top:5%;left:32%;animation-delay:0.5s;">"在那遥远的地方，有一颗恒星，它的名字叫 Gloria。"<span style="display:block;font-size:0.8rem;color:#ff007f;margin-top:8px;text-align:right;">—《启示录》</span></div>
+            <div class="lyric-card reveal" style="top:65%;left:2%;animation-delay:0.8s;">"我能习惯远距离 爱总是身不由己。"<span style="display:block;font-size:0.8rem;color:#ff007f;margin-top:8px;text-align:right;">—《多远都要在一起》</span></div>
+            <div class="lyric-card reveal" style="top:80%;left:22%;animation-delay:1.2s;">"我徘徊在爱你 还是爱自己的十字。"<span style="display:block;font-size:0.8rem;color:#ff007f;margin-top:8px;text-align:right;">—《透明》</span></div>
+            <div class="lyric-card reveal" style="top:45%;left:50%;animation-delay:0.3s;">"小王子爱着玫瑰 每天浇水 却不能体会 玫瑰其实憔悴。"<span style="display:block;font-size:0.8rem;color:#ff007f;margin-top:8px;text-align:right;">—《寂寞星球的玫瑰》</span></div>
         </div>
     </section>
-    <section class="fan-board">
-        <h1 style="position:relative; z-index:1; text-shadow: 0 0 15px #00ffff; color: #00ffff; margin-bottom: 20px;">FAN BOARD</h1>
+
+    <!-- ===== 第四页：留言板 ===== -->
+    <section class="fan-board" id="fanboard">
+        <h1 style="position:relative;z-index:1;text-shadow:0 0 15px #00ffff;color:#00ffff;margin-bottom:8px;" class="reveal">FAN BOARD</h1>
+        <div style="position:relative;z-index:1;margin-bottom:24px;font-size:0.85rem;color:#666;">
+            当前身份：<span id="current-nickname-display" style="color:#ff007f;font-weight:600;"></span>
+            <span class="feed-nickname-tag" onclick="changeNickname()">修改昵称</span>
+        </div>
         <div class="publish-area">
             <textarea id="post-text" placeholder="分享关于 G.E.M. 的点滴..."></textarea>
-            <!-- 修复后的上传控件：增加capture="none"，优化样式 -->
-            <!-- 替换原来的 upload-controls div -->
-<div class="upload-controls" style="gap: 10px;">
-    <label for="post-image" class="custom-file-btn">🖼️ 选择图片</label>
-    <input type="file" id="post-image" accept="image/*" multiple onchange="handleFileSelect(event)" style="display:none;">
-
-    <label for="post-video" class="custom-file-btn">🎬 选择视频</label>
-    <input type="file" id="post-video" accept="video/*" onchange="handleFileSelect(event)" style="display:none;">
-</div>
-            <div id="preview-container" style="display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap;"></div>
+            <div class="upload-controls">
+                <label for="post-file" class="custom-file-btn">📸 选择媒体 (最多9张)</label>
+                <input type="file" id="post-file" accept="image/*,video/*" multiple capture="none" onchange="handleFileSelect(event)" style="display:none;">
+            </div>
+            <div id="preview-container" style="display:flex;gap:10px;margin:10px 0;flex-wrap:wrap;"></div>
             <button onclick="addPost()" class="listen-btn">发布动态</button>
         </div>
         <div class="feed-container" id="feed-container"></div>
     </section>
+
+    <!-- ===== 播放器 ===== -->
     <div id="player-overlay">
         <div class="player-container">
             <span class="close-player" onclick="closePlayer()">✕</span>
             <div class="player-left">
                 <div id="disc" class="vinyl-disc"></div>
-                <h2 id="p-name" style="margin-top:20px; text-align:center;">歌曲名称</h2>
+                <h2 id="p-name" style="margin-top:20px;text-align:center;">歌曲名称</h2>
             </div>
             <div class="player-right">
                 <iframe id="bili-player" src="" scrolling="no" border="0" frameborder="no" allowfullscreen="true"></iframe>
             </div>
         </div>
     </div>
-    <div id="img-viewer" onclick="closeViewer()">
-        <span class="close-viewer">✕</span>
-        <img id="view-img" src="" alt="Full size image">
+
+    <!-- ===== 昵称弹窗 ===== -->
+    <div id="nickname-modal" class="hidden">
+        <div class="nickname-box">
+            <h2>✨ 欢迎来到 G.E.M. DIGITAL</h2>
+            <p>给自己起一个专属昵称吧～</p>
+            <input class="nickname-input" id="nickname-input" maxlength="16" placeholder="输入你的昵称（最多16字）">
+            <button class="nickname-confirm" onclick="confirmNickname()">确认进入 →</button>
+            <div class="nickname-hint">已有昵称？<span onclick="skipNickname()">直接进入</span></div>
+        </div>
     </div>
+
+    <!-- ===== 统一灯箱（翻页）===== -->
+    <div id="unified-lightbox">
+        <span class="lb-close" onclick="closeLightbox()">✕</span>
+        <div class="lb-arrow prev" id="lb-prev" onclick="lightboxNav(-1)">‹</div>
+        <img id="lb-img" src="" alt="">
+        <div class="lb-arrow next" id="lb-next" onclick="lightboxNav(1)">›</div>
+        <div class="lb-counter" id="lb-counter"></div>
+    </div>
+
+    <!-- ===== 返回顶部 ===== -->
     <div id="back-to-top" onclick="scrollToTop()">
-        <span style="font-size: 20px;">↑</span>
-        <div style="font-size: 10px;">TOP</div>
+        <span style="font-size:20px;">↑</span>
+        <div style="font-size:10px;">TOP</div>
     </div>
-    <div id="lightbox" onclick="closeViewer()">
-        <span class="close-btn">&times;</span>
-        <img id="lightbox-img" src="" alt="放大图片">
-    </div>
-    <script>
-    
 
+<script>
+    // ==================== Supabase ====================
+    const SUPABASE_URL = 'https://ubgdctufazaxqydzjfjm.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_G--UZTZyO-9PFAFC8P0lQw_Dy4lrymG';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 获取或生成用户的唯一昵称
-        function getUserId() {
-            let userId = localStorage.getItem('gem_user_id');
-            if (!userId) {
-                const randomStr = Math.random().toString(36).substring(2, 6);
-                userId = `粉丝_${randomStr}`; 
-                localStorage.setItem('gem_user_id', userId);
-            }
-            return userId;
+    // ==================== 昵称弹窗 ====================
+    (function initNickname() {
+        if (!localStorage.getItem('gem_user_id')) {
+            document.getElementById('nickname-modal').classList.remove('hidden');
         }
-        const currentUserName = getUserId();
-        console.log("当前用户昵称:", currentUserName);
-        
-        const SUPABASE_URL = 'https://ubgdctufazaxqydzjfjm.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_G--UZTZyO-9PFAFC8P0lQw_Dy4lrymG';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        // 播放器逻辑
-        function openPlayer(title, img, videoUrl) {
-            document.getElementById('p-name').innerText = title;
-            document.getElementById('disc').style.backgroundImage = `url('${img}')`;
-            document.getElementById('bili-player').src = videoUrl + "&high_quality=1";
-            document.getElementById('player-overlay').style.display = 'flex';
+    })();
+
+    function confirmNickname() {
+        const input = document.getElementById('nickname-input').value.trim();
+        if (!input) {
+            document.getElementById('nickname-input').style.borderColor = '#ff007f';
+            document.getElementById('nickname-input').placeholder = '请输入昵称！';
+            return;
         }
-        function closePlayer() { 
-            document.getElementById('player-overlay').style.display = 'none'; 
-            document.getElementById('bili-player').src = ""; 
+        localStorage.setItem('gem_user_id', input);
+        document.getElementById('nickname-modal').classList.add('hidden');
+        refreshNicknameDisplay();
+    }
+
+    function skipNickname() {
+        if (!localStorage.getItem('gem_user_id')) {
+            const r = Math.random().toString(36).substring(2, 6);
+            localStorage.setItem('gem_user_id', `粉丝_${r}`);
         }
+        document.getElementById('nickname-modal').classList.add('hidden');
+        refreshNicknameDisplay();
+    }
 
-        // 全局变量：存放选中的文件（兼容移动端，纯数组管理）
-        let selectedFiles = [];
-        // 处理文件选择（核心修复：移除DataTransfer，增加去重、重置input）
-        function handleFileSelect(event) {
-    const container = document.getElementById('preview-container');
-    const newFiles = Array.from(event.target.files);
+    function changeNickname() {
+        const inp = document.getElementById('nickname-input');
+        inp.value = localStorage.getItem('gem_user_id') || '';
+        document.getElementById('nickname-modal').classList.remove('hidden');
+        setTimeout(() => inp.focus(), 100);
+    }
 
-    // 按文件名+大小去重，避免重复添加同一文件
-    const existingKeys = new Set(selectedFiles.map(f => f.name + f.size));
-    const uniqueNewFiles = newFiles.filter(f => !existingKeys.has(f.name + f.size));
+    function refreshNicknameDisplay() {
+        const el = document.getElementById('current-nickname-display');
+        if (el) el.textContent = localStorage.getItem('gem_user_id') || '匿名粉丝';
+    }
 
-    // 合并，最多9个
-    selectedFiles = [...selectedFiles, ...uniqueNewFiles].slice(0, 9);
+    // ==================== 播放器 ====================
+    function openPlayer(title, img, videoUrl) {
+        document.getElementById('p-name').innerText = title;
+        document.getElementById('disc').style.backgroundImage = `url('${img}')`;
+        document.getElementById('bili-player').src = videoUrl + '&high_quality=1';
+        document.getElementById('player-overlay').style.display = 'flex';
+    }
+    function closePlayer() {
+        document.getElementById('player-overlay').style.display = 'none';
+        document.getElementById('bili-player').src = '';
+    }
 
-    // 重新渲染全部预览
-    container.innerHTML = '';
-    selectedFiles.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const div = document.createElement('div');
-            div.style = "position:relative; width:80px; height:80px;";
-            div.innerHTML = `
-                <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover; border-radius:8px; border:1px solid #ff4d4d;">
-                <div style="position:absolute; top:-6px; right:-6px; background:#ff4d4d; color:white; border-radius:50%; width:22px; height:22px; text-align:center; line-height:22px; cursor:pointer; font-size:12px; box-shadow:0 2px 4px #000;" onclick="removeFile(${index})">×</div>
-            `;
-            container.appendChild(div);
-        };
-        reader.readAsDataURL(file);
+    // ==================== 统一灯箱 ====================
+    let _lbUrls = [], _lbIdx = 0;
+
+    function openViewer(url, allUrls) {
+        _lbUrls = (allUrls && allUrls.length) ? allUrls : [url];
+        _lbIdx  = Math.max(0, _lbUrls.indexOf(url));
+        _renderLightbox();
+        document.getElementById('unified-lightbox').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function _renderLightbox() {
+        document.getElementById('lb-img').src = _lbUrls[_lbIdx];
+        document.getElementById('lb-counter').textContent = _lbUrls.length > 1 ? `${_lbIdx + 1} / ${_lbUrls.length}` : '';
+        document.getElementById('lb-prev').classList.toggle('hidden', _lbIdx === 0);
+        document.getElementById('lb-next').classList.toggle('hidden', _lbIdx === _lbUrls.length - 1);
+    }
+
+    function lightboxNav(dir) {
+        _lbIdx = Math.max(0, Math.min(_lbUrls.length - 1, _lbIdx + dir));
+        const img = document.getElementById('lb-img');
+        img.style.opacity = '0'; img.style.transform = 'scale(0.92)';
+        setTimeout(() => { _renderLightbox(); img.style.opacity = '1'; img.style.transform = 'scale(1)'; }, 160);
+    }
+
+    function closeLightbox() {
+        document.getElementById('unified-lightbox').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+    // 兼容旧调用
+    function closeViewer() { closeLightbox(); }
+
+    document.addEventListener('keydown', e => {
+        const lb = document.getElementById('unified-lightbox');
+        if (!lb.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft')  lightboxNav(-1);
+        if (e.key === 'ArrowRight') lightboxNav(1);
+        if (e.key === 'Escape')     closeLightbox();
+    });
+    document.getElementById('unified-lightbox').addEventListener('click', function(e) {
+        if (e.target === this) closeLightbox();
     });
 
-    // 重置input，允许重复选同一文件
-    event.target.value = '';
-}
-        // 移除指定文件（核心修复：纯数组操作，兼容所有端）
-        function removeFile(index) {
-            selectedFiles.splice(index, 1);
-            // 重新渲染预览
-            const container = document.getElementById('preview-container');
-            container.innerHTML = '';
-            selectedFiles.forEach((file, i) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const div = document.createElement('div');
-                    div.style = "position:relative; width:80px; height:80px;";
-                    div.innerHTML = `
-                        <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover; border-radius:8px; border:1px solid #ff4d4d;">
-                        <div style="position:absolute; top:-6px; right:-6px; background:#ff4d4d; color:white; border-radius:50%; width:22px; height:22px; text-align:center; line-height:22px; cursor:pointer; font-size:12px; box-shadow:0 2px 4px #000;" onclick="removeFile(${i})">×</div>
-                    `;
-                    container.appendChild(div);
-                };
-                reader.readAsDataURL(file);
+    // ==================== 文件上传 ====================
+    let selectedFiles = [];
+
+    function handleFileSelect(event) {
+        const container = document.getElementById('preview-container');
+        container.innerHTML = '';
+        const newFiles = Array.from(event.target.files);
+        selectedFiles = [...new Set([...selectedFiles, ...newFiles])].slice(0, 9);
+        renderPreviews();
+        event.target.value = '';
+    }
+
+    function removeFile(index) {
+        selectedFiles.splice(index, 1);
+        renderPreviews();
+    }
+
+    function renderPreviews() {
+        const container = document.getElementById('preview-container');
+        container.innerHTML = '';
+        selectedFiles.forEach((file, i) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const div = document.createElement('div');
+                div.style = 'position:relative;width:80px;height:80px;';
+                div.innerHTML = `
+                    <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid #ff4d4d;">
+                    <div style="position:absolute;top:-6px;right:-6px;background:#ff4d4d;color:white;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;cursor:pointer;font-size:12px;box-shadow:0 2px 4px #000;" onclick="removeFile(${i})">×</div>`;
+                container.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // ==================== 发布帖子 ====================
+    async function addPost() {
+        const text = document.getElementById('post-text').value;
+        if (!text.trim() && selectedFiles.length === 0) { alert('请输入内容或选择媒体文件'); return; }
+        let nickname = localStorage.getItem('gem_user_id');
+        if (!nickname) { nickname = `粉丝_${Math.random().toString(36).substring(2,6)}`; localStorage.setItem('gem_user_id', nickname); }
+        const btn = document.querySelector('.publish-area .listen-btn');
+        btn.innerText = '正在上载至云端...'; btn.disabled = true;
+        let mediaUrls = [];
+        try {
+            for (const file of selectedFiles) {
+                if (!file.name || !file.size) continue;
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(2,7)}.${file.name.split('.').pop()}`;
+                const { error: uploadError } = await supabaseClient.storage.from('posts_media').upload(`uploads/${fileName}`, file);
+                if (uploadError) throw uploadError;
+                const { data: { publicUrl } } = supabaseClient.storage.from('posts_media').getPublicUrl(`uploads/${fileName}`);
+                mediaUrls.push(publicUrl);
+            }
+            const { error: dbError } = await supabaseClient.from('posts').insert([{ content: text, media_urls: mediaUrls, user_nickname: nickname }]);
+            if (dbError) throw dbError;
+            alert('发布成功！');
+            document.getElementById('post-text').value = '';
+            document.getElementById('post-file').value = '';
+            document.getElementById('preview-container').innerHTML = '';
+            selectedFiles = [];
+            location.reload();
+        } catch (err) {
+            console.error('发布出错:', err);
+            alert('发布失败：' + err.message);
+        } finally {
+            btn.innerText = '发布动态'; btn.disabled = false;
+        }
+    }
+
+    // ==================== 读取帖子 ====================
+    async function fetchPosts() {
+        const { data: posts, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
+        if (error) { console.error('读取失败:', error); return; }
+        const container = document.getElementById('feed-container');
+        container.innerHTML = '';
+        posts.forEach(post => renderPostToUI(post, true));
+    }
+
+    // ==================== 渲染帖子 ====================
+    function renderPostToUI(post, isInitialLoad = false) {
+        const container = document.getElementById('feed-container');
+        if (!container) return;
+        const postId = post.id;
+        const newItem = document.createElement('div');
+        newItem.className = 'feed-item'; newItem.id = `post-${postId}`;
+
+        let mediaHtml = '';
+        if (post.media_urls && Array.isArray(post.media_urls) && post.media_urls.length > 0) {
+            const imageUrls = post.media_urls.filter(u => !/\.(mp4|mov)$/i.test(u));
+            const allUrlsJson = JSON.stringify(imageUrls).replace(/"/g, '&quot;');
+            mediaHtml = `<div class="media-grid" data-count="${post.media_urls.length}" data-imgurls="${allUrlsJson}">`;
+            post.media_urls.forEach((url, index) => {
+                const isVideo = /\.(mp4|mov)$/i.test(url);
+                const mid = `media-${postId}-${index}`;
+                mediaHtml += `<div class="media-container">
+                    ${!isVideo
+                        ? `<img id="${mid}" src="${url}" onclick="openViewer('${url}', JSON.parse(this.closest('.media-grid').dataset.imgurls||'[]'))" loading="lazy">`
+                        : `<video id="${mid}" src="${url}" controls></video>`}
+                    <div class="more-trigger" onclick="toggleDownload(event,'${postId}-${index}')">···</div>
+                    <div class="download-pop" id="pop-${postId}-${index}">
+                        <span onclick="downloadMedia('${mid}','GEM-resource')">💾 下载</span>
+                    </div>
+                </div>`;
+            });
+            mediaHtml += '</div>';
+        }
+
+        const currentUser = localStorage.getItem('gem_user_id');
+        const showDelete = (post.user_nickname === currentUser) || (currentUser === 'Admin_GEM_007');
+        const deleteBtnHtml = showDelete ? `<div class="delete-btn" onclick="deletePost('${postId}','${post.user_nickname}')" title="删除">✕</div>` : '';
+
+        newItem.innerHTML = `
+            ${deleteBtnHtml}
+            <div class="feed-user">
+                <div class="feed-avatar">${(post.user_nickname || '匿').charAt(0)}</div>
+                <div>
+                    <b>${post.user_nickname || '匿名粉丝'}</b>
+                    <div style="font-size:0.7rem;color:#888">${new Date(post.created_at).toLocaleString()}</div>
+                </div>
+            </div>
+            <div class="feed-content">${post.content || ''}</div>
+            ${mediaHtml}
+            <div class="action-bar">
+                <div class="action-item" onclick="toggleComment('${postId}')">💬 评论</div>
+                <div class="action-item" onclick="toggleLike(this,'${postId}')">❤️ <span class="like-count">${post.likes || 0}</span></div>
+            </div>
+            <div class="comment-section" id="comment-sec-${postId}" style="display:none">
+                <div class="comment-list" id="comment-list-${postId}"></div>
+                <div class="comment-input-wrap">
+                    <input type="text" id="input-${postId}" placeholder="写下你的回复...">
+                    <button class="comment-submit" onclick="addComment('${postId}')">发送</button>
+                </div>
+            </div>`;
+        if (isInitialLoad) container.appendChild(newItem);
+        else container.prepend(newItem);
+    }
+
+    // ==================== 下载弹窗 ====================
+    function toggleDownload(e, id) {
+        e.stopPropagation();
+        const pop = document.getElementById('pop-' + id);
+        document.querySelectorAll('.download-pop').forEach(p => { if (p !== pop) p.style.display = 'none'; });
+        pop.style.display = pop.style.display === 'flex' ? 'none' : 'flex';
+    }
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.download-pop').forEach(p => p.style.display = 'none');
+    });
+
+    function downloadMedia(mid, name) {
+        const el = document.getElementById(mid);
+        const a = document.createElement('a'); a.href = el.src; a.download = name; a.click();
+    }
+
+    // ==================== 点赞 ====================
+    async function toggleLike(element, postId) {
+        const countSpan = element.querySelector('.like-count');
+        let currentLikes = parseInt(countSpan.innerText);
+        if (element.classList.contains('liked')) return;
+        try {
+            currentLikes++;
+            countSpan.innerText = currentLikes;
+            element.style.color = '#ff4d4d';
+            element.classList.add('liked');
+            const { error } = await supabaseClient.from('posts').update({ likes: currentLikes }).eq('id', postId);
+            if (error) throw error;
+        } catch (err) { console.error('点赞失败:', err); }
+    }
+
+    // ==================== 评论 ====================
+    async function addComment(postId) {
+        const input = document.getElementById(`input-${postId}`);
+        const content = input.value.trim();
+        if (!content) return;
+        const { error } = await supabaseClient.from('comments').insert([{ post_id: postId, content: content }]);
+        if (error) alert('评论失败：' + error.message);
+        else { input.value = ''; fetchComments(postId); }
+    }
+
+    async function fetchComments(postId) {
+        const { data: comments, error } = await supabaseClient.from('comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
+        if (!error) {
+            const list = document.getElementById(`comment-list-${postId}`);
+            list.innerHTML = '';
+            comments.forEach(comment => {
+                const div = document.createElement('div');
+                div.className = 'comment-item'; div.id = `comment-${comment.id}`;
+                div.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                        <span style="color:#00d2ff;font-size:0.8rem;">粉丝: ${comment.content}</span>
+                        <span style="cursor:pointer;color:#ff4d4d;font-size:0.7rem;" onclick="deleteComment(${comment.id})">删除</span>
+                    </div>
+                    <div style="font-size:0.6rem;color:#666;">${new Date(comment.created_at).toLocaleString()}</div>`;
+                list.appendChild(div);
             });
         }
+    }
 
-        let postCounter = 0;
-        let commentCounter = 0;
-        // 发布逻辑（核心修复：增加移动端容错，跳过无效文件）
-        async function addPost() {
-            const text = document.getElementById('post-text').value;
-            const fileInput = document.getElementById('post-file');
-            if (!text.trim() && selectedFiles.length === 0) {
-                alert("请输入内容或选择媒体文件");
-                return;
-            }
-            let nickname = localStorage.getItem('gem_user_id');
-            if (!nickname) {
-                const randomStr = Math.random().toString(36).substring(2, 6);
-                nickname = `粉丝_${randomStr}`;
-                localStorage.setItem('gem_user_id', nickname);
-            }
-            const btn = document.querySelector('.publish-area .listen-btn');
-            const originalBtnText = btn.innerText;
-            btn.innerText = "正在上载至云端...";
-            btn.disabled = true;
-            let mediaUrls = [];
-            try {
-                // 移动端容错：空文件直接返回空数组，跳过无效文件
-                if (selectedFiles.length === 0) mediaUrls = [];
-                for (const file of selectedFiles) {
-                    if (!file.name || !file.size) continue;
-                    const fileExt = file.name.split('.').pop();
-                    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-                    const filePath = `uploads/${fileName}`;
-                    const { data, error: uploadError } = await supabaseClient.storage
-                        .from('posts_media')
-                        .upload(filePath, file);
-                    if (uploadError) throw uploadError;
-                    const { data: { publicUrl } } = supabaseClient.storage
-                        .from('posts_media')
-                        .getPublicUrl(filePath);
-                    mediaUrls.push(publicUrl); 
-                }
-                const { error: dbError } = await supabaseClient
-                    .from('posts')
-                    .insert([{ 
-                        content: text, 
-                        media_urls: mediaUrls, 
-                        user_nickname: nickname 
-                    }]);
-                if (dbError) throw dbError;
-                alert("发布成功！");
-                document.getElementById('post-text').value = '';
-                fileInput.value = '';
-                document.getElementById('preview-container').innerHTML = '';
-                selectedFiles = []; 
-                location.reload();
-            } catch (err) {
-                console.error('发布过程出错:', err);
-                alert('发布失败：' + err.message);
-            } finally {
-                btn.innerText = originalBtnText;
-                btn.disabled = false;
-            }
-        }
+    async function deleteComment(commentId) {
+        if (!confirm('确定要删除这条评论吗？')) return;
+        try {
+            const { error } = await supabaseClient.from('comments').delete().eq('id', commentId);
+            if (error) throw error;
+            document.getElementById(`comment-${commentId}`)?.remove();
+        } catch (err) { alert('删除失败：' + err.message); }
+    }
 
-        // 获取帖子
-        async function fetchPosts() {
-            const { data: posts, error } = await supabaseClient
-                .from('posts')
-                .select('*')
-                .order('created_at', { ascending: false });
-            if (error) {
-                console.error('读取失败:', error);
-                return;
-            }
-            const container = document.getElementById('feed-container');
-            container.innerHTML = ''; 
-            posts.forEach(post => {
-                renderPostToUI(post, true); 
+    function toggleComment(postId) {
+        const sec = document.getElementById(`comment-sec-${postId}`);
+        if (sec.style.display === 'none' || sec.style.display === '') {
+            sec.style.display = 'block'; fetchComments(postId);
+        } else { sec.style.display = 'none'; }
+    }
+
+    // ==================== 删除帖子 ====================
+    async function deletePost(id, postOwnerNickname) {
+        const currentUser = localStorage.getItem('gem_user_id');
+        if (currentUser !== postOwnerNickname && currentUser !== 'Admin_GEM_007') { alert('这不是你发的，不可以删除哦~'); return; }
+        if (!confirm('确定要永久删除这条动态吗？')) return;
+        try {
+            const { data, error } = await supabaseClient.from('posts').delete().eq('id', id).select();
+            if (error) throw error;
+            if (!data || data.length === 0) { alert('服务器拒绝删除，请检查 Supabase RLS 策略！'); return; }
+            document.getElementById(`post-${id}`)?.remove();
+            alert('已从云端永久删除');
+        } catch (err) { alert('错误：' + err.message); }
+    }
+
+    // ==================== 返回顶部 ====================
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    window.addEventListener('scroll', () => {
+        document.getElementById('back-to-top').classList.toggle('show', window.scrollY > 300);
+    }, { passive: true });
+
+    // ==================== 导航栏 + 进度条 + 高亮 ====================
+    (function initNav() {
+        const nav      = document.getElementById('topnav');
+        const progress = document.getElementById('scroll-progress');
+        const sections = ['home','albums','lyrics','fanboard'];
+        const links    = document.querySelectorAll('.nav-link');
+
+        links.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                document.getElementById(link.getAttribute('href').slice(1))?.scrollIntoView({ behavior: 'smooth' });
             });
-        }
-        window.addEventListener('DOMContentLoaded', fetchPosts);
-
-        // 渲染帖子
-        function renderPostToUI(post, isInitialLoad = false) {
-            const container = document.getElementById('feed-container');
-            if (!container) return;
-            const postId = post.id; 
-            const newItem = document.createElement('div');
-            newItem.className = 'feed-item';
-            newItem.id = `post-${postId}`;
-            // 处理媒体网格
-            let mediaHtml = '';
-            if (post.media_urls && Array.isArray(post.media_urls) && post.media_urls.length > 0) {
-                mediaHtml = `<div class="media-grid" data-count="${post.media_urls.length}">`;
-                post.media_urls.forEach((url, index) => {
-                    const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.mov');
-                    const mid = `media-${postId}-${index}`;
-                    mediaHtml += `
-                        <div class="media-container">
-                            ${!isVideo ? 
-                                `<img id="${mid}" src="${url}" onclick="openViewer('${url}')" loading="lazy">` : 
-                                `<video id="${mid}" src="${url}" controls></video>`
-                            }
-                            <div class="more-trigger" onclick="toggleDownload(event, '${postId}-${index}')">···</div>
-                            <div class="download-pop" id="pop-${postId}-${index}">
-                                <span onclick="downloadMedia('${mid}', 'GEM-resource')">💾 下载图片</span>
-                            </div>
-                        </div>`;
-                });
-                mediaHtml += `</div>`;
-            }
-            // 权限判断
-            const currentUser = localStorage.getItem('gem_user_id');
-            const adminNickname = 'Admin_GEM_007';
-            const showDelete = (post.user_nickname === currentUser) || (currentUser === adminNickname);
-            const deleteBtnHtml = showDelete 
-                ? `<div class="delete-btn" onclick="deletePost('${postId}', '${post.user_nickname}')" title="删除动态">✕</div>` 
-                : '';
-            // 拼接HTML
-            newItem.innerHTML = `
-                ${deleteBtnHtml}
-                <div class="feed-user">
-                    <div class="feed-avatar">${(post.user_nickname || '匿').charAt(0)}</div>
-                    <div>
-                        <b>${post.user_nickname || '匿名粉丝'}</b>
-                        <div style="font-size:0.7rem; color:#888">${new Date(post.created_at).toLocaleString()}</div>
-                    </div>
-                </div>
-                <div class="feed-content">${post.content || ''}</div>
-                ${mediaHtml}
-                <div class="action-bar">
-                    <div class="action-item" onclick="toggleComment('${postId}')">💬 评论</div>
-                    <div class="action-item" onclick="toggleLike(this, '${postId}')">
-                        ❤️ <span class="like-count">${post.likes || 0}</span>
-                    </div>
-                </div>
-                <div class="comment-section" id="comment-sec-${postId}" style="display:none">
-                    <div class="comment-list" id="comment-list-${postId}"></div>
-                    <div class="comment-input-wrap">
-                        <input type="text" id="input-${postId}" placeholder="写下你的回复...">
-                        <button class="comment-submit" onclick="addComment('${postId}')">发送</button>
-                    </div>
-                </div>
-            `;
-            // 插入逻辑
-            if (isInitialLoad) {
-                container.appendChild(newItem);
-            } else {
-                container.prepend(newItem);
-            }
-        }
-
-        // 下载弹窗切换
-        function toggleDownload(e, id) {
-            e.stopPropagation();
-            const pop = document.getElementById('pop-' + id);
-            document.querySelectorAll('.download-pop').forEach(p => { if(p !== pop) p.style.display = 'none'; });
-            pop.style.display = pop.style.display === 'flex' ? 'none' : 'flex';
-        }
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.download-pop').forEach(p => p.style.display = 'none');
         });
 
-        // 点赞逻辑
-        async function toggleLike(element, postId) {
-            const icon = element;
-            const countSpan = icon.querySelector('.like-count');
-            let currentLikes = parseInt(countSpan.innerText);
-            if (icon.classList.contains('liked')) return;
-            try {
-                currentLikes++;
-                countSpan.innerText = currentLikes;
-                icon.style.color = '#ff4d4d';
-                icon.classList.add('liked');
-                const { error } = await supabaseClient
-                    .from('posts')
-                    .update({ likes: currentLikes })
-                    .eq('id', postId);
-                if (error) throw error;
-            } catch (err) {
-                console.error('点赞更新失败:', err);
-            }
-        }
-
-        // 评论逻辑
-        async function addComment(postId) {
-            const input = document.getElementById(`input-${postId}`);
-            const content = input.value.trim();
-            if (!content) return;
-            const { data, error } = await supabaseClient
-                .from('comments')
-                .insert([{ 
-                    post_id: postId, 
-                    content: content 
-                }]);
-            if (error) {
-                alert("评论失败：" + error.message);
-            } else {
-                input.value = '';
-                fetchComments(postId);
-            }
-        }
-
-        // 获取评论
-        async function fetchComments(postId) {
-            const { data: comments, error } = await supabaseClient
-                .from('comments')
-                .select('*')
-                .eq('post_id', postId)
-                .order('created_at', { ascending: true });
-            if (!error) {
-                const list = document.getElementById(`comment-list-${postId}`);
-                list.innerHTML = ''; 
-                comments.forEach(comment => {
-                    const div = document.createElement('div');
-                    div.className = 'comment-item';
-                    div.id = `comment-${comment.id}`;
-                    div.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                            <span style="color: #00d2ff; font-size: 0.8rem;">粉丝: ${comment.content}</span>
-                            <span style="cursor: pointer; color: #ff4d4d; font-size: 0.7rem;" 
-                                  onclick="deleteComment(${comment.id})">删除</span>
-                        </div>
-                        <div style="font-size: 0.6rem; color: #666;">${new Date(comment.created_at).toLocaleString()}</div>
-                    `;
-                    list.appendChild(div);
-                });
-            }
-        }
-
-        // 删除评论
-        async function deleteComment(commentId) {
-            if (!confirm('确定要删除这条评论吗？')) return;
-            try {
-                const { error } = await supabaseClient
-                    .from('comments')
-                    .delete()
-                    .eq('id', commentId);
-                if (error) throw error;
-                const commentElement = document.getElementById(`comment-${commentId}`);
-                if (commentElement) {
-                    commentElement.remove();
-                }
-                console.log('评论已成功从云端删除');
-            } catch (err) {
-                console.error('删除评论失败:', err);
-                alert('删除失败：' + err.message);
-            }
-        }
-
-        // 切换评论区
-        function toggleComment(postId) {
-            const sec = document.getElementById(`comment-sec-${postId}`);
-            if (sec.style.display === 'none' || sec.style.display === '') {
-                sec.style.display = 'block';
-                fetchComments(postId);
-            } else {
-                sec.style.display = 'none';
-            }
-        }
-
-        // 删除帖子
-        async function deletePost(id, postOwnerNickname) {
-            const currentUser = localStorage.getItem('gem_user_id');
-            const adminSecret = 'Admin_GEM_007';
-            if (currentUser !== postOwnerNickname && currentUser !== adminSecret) {
-                alert("这不是你发的，不可以删除哦~");
-                return;
-            }
-            if (!confirm('确定要永久删除这条动态吗？')) return;
-            try {
-                const { data, error } = await supabaseClient
-                    .from('posts')
-                    .delete()
-                    .eq('id', id)
-                    .select();
-                if (error) throw error;
-                if (!data || data.length === 0) {
-                    alert('服务器拒绝了删除请求。请检查 Supabase 的 RLS 策略设置！');
-                    return;
-                }
-                const element = document.getElementById(`post-${id}`);
-                if (element) element.remove();
-                alert('已从云端永久删除');
-            } catch (err) {
-                console.error('删除失败:', err);
-                alert('错误：' + err.message);
-            }
-        }
-
-        // 下载媒体
-        function downloadMedia(mid, name) {
-            const el = document.getElementById(mid);
-            const a = document.createElement('a'); a.href = el.src; a.download = name; a.click();
-        }
-
-        // 灯箱逻辑
-        function openViewer(url) {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = url;
-            lightbox.style.display = 'flex';
-            setTimeout(() => {
-                lightbox.classList.add('active');
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-        function closeViewer() {
-            const lightbox = document.getElementById('lightbox');
-            lightbox.classList.remove('active');
-            lightbox.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // 返回顶部（补全原有未实现的函数）
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-        // 监听滚动显示返回顶部按钮
         window.addEventListener('scroll', () => {
-            const backBtn = document.getElementById('back-to-top');
-            if (window.scrollY > 300) {
-                backBtn.classList.add('show');
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            progress.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+            nav.classList.toggle('scrolled', scrollTop > 60);
+            let current = 'home';
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && scrollTop >= el.offsetTop - 120) current = id;
+            });
+            links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+        }, { passive: true });
+    })();
+
+    // ==================== Scroll Reveal ====================
+    (function initReveal() {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const siblings = Array.from(entry.target.parentElement.querySelectorAll('.reveal:not(.visible)'));
+                    const delay = siblings.indexOf(entry.target) * 80;
+                    setTimeout(() => entry.target.classList.add('visible'), delay);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    })();
+
+    // ==================== 粒子星光 ====================
+    (function initParticles() {
+        const canvas = document.getElementById('welcome-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+        resize();
+        window.addEventListener('resize', resize);
+        const particles = Array.from({ length: 90 }, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            r: Math.random() * 1.8 + 0.4,
+            vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random(),
+            deltaAlpha: (Math.random() * 0.01 + 0.003) * (Math.random() < 0.5 ? 1 : -1),
+            color: Math.random() < 0.5 ? '255,0,127' : '121,40,202'
+        }));
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                p.alpha += p.deltaAlpha;
+                if (p.alpha <= 0 || p.alpha >= 1) p.deltaAlpha *= -1;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${p.color},${p.alpha.toFixed(2)})`; ctx.fill();
+                particles.forEach(q => {
+                    const dx = p.x - q.x, dy = p.y - q.y, dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 80) {
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+                        ctx.strokeStyle = `rgba(255,0,127,${(0.12*(1-dist/80)).toFixed(3)})`; ctx.lineWidth = 0.5; ctx.stroke();
+                    }
+                });
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
+    // ==================== 数字滚动计数器 ====================
+    function animateCounter(el, target, suffix, format, duration) {
+        const start = performance.now();
+        (function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(ease * target);
+            if (format === 'short') {
+                el.textContent = current >= 1e8 ? `${(current/1e8).toFixed(0)}亿${suffix}` : current >= 1e4 ? `${(current/1e4).toFixed(0)}万${suffix}` : current.toLocaleString() + suffix;
             } else {
-                backBtn.classList.remove('show');
+                el.textContent = current.toLocaleString() + suffix;
             }
+            if (progress < 1) requestAnimationFrame(step);
+        })(start);
+    }
+
+    // ==================== DOMContentLoaded 统一初始化 ====================
+    window.addEventListener('DOMContentLoaded', () => {
+        // 刷新昵称显示
+        refreshNicknameDisplay();
+
+        // Enter 键确认昵称
+        document.getElementById('nickname-input')?.addEventListener('keydown', e => {
+            if (e.key === 'Enter') confirmNickname();
         });
-    </script>
+
+        // 数字计数器
+        document.querySelectorAll('.honor-list .num[data-target]').forEach(el => {
+            const liIndex = Array.from(el.closest('ul').children).indexOf(el.closest('li'));
+            setTimeout(() => animateCounter(el, parseInt(el.dataset.target), el.dataset.suffix || '', el.dataset.format || '', 1500), 1800 + liIndex * 300 + 200);
+        });
+
+        // 读取帖子
+        fetchPosts();
+    });
+</script>
 </body>
 </html>
