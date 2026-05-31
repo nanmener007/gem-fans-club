@@ -4,26 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
-    <meta name="description" content="G.E.M. 邓紫棋粉丝宇宙：音乐收藏、歌词墙和粉丝留言板。">
-    <meta name="theme-color" content="#050510">
     <title>✨ G.E.M. 宇宙巅峰</title>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* ===================== 全局 ===================== */
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
         body {
             margin: 0; padding: 0;
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #050510; color: #fff; overflow-x: hidden;
-            -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-        }
-        img, video { max-width: 100%; }
-        button, input, textarea { font: inherit; }
-        button:disabled { cursor: not-allowed; opacity: 0.65; }
-        button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
-            outline: 2px solid #00ffff; outline-offset: 3px;
         }
 
         /* ===================== 顶部导航栏 ===================== */
@@ -33,9 +21,7 @@
             padding: 0 40px; height: 60px; box-sizing: border-box;
             background: rgba(5, 5, 16, 0); backdrop-filter: blur(0px);
             transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
-            overflow-x: auto; scrollbar-width: none;
         }
-        #topnav::-webkit-scrollbar { display: none; }
         #topnav.scrolled {
             background: rgba(5, 5, 16, 0.85);
             backdrop-filter: blur(20px);
@@ -71,7 +57,7 @@
 
         /* ===================== 第一页：封面 ===================== */
         .welcome-screen {
-            position: relative; width: 100%; min-height: 100vh; min-height: 100svh;
+            position: relative; width: 100%; height: 100vh;
             display: flex; overflow: hidden; background: #000;
         }
         .top-left-avatar {
@@ -170,7 +156,6 @@
             padding: 100px 5%;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-            content-visibility: auto; contain-intrinsic-size: 900px;
         }
         .album-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -225,7 +210,6 @@
         .lyrics-universe {
             padding: 100px 5%; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
             min-height: 100vh; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;
-            content-visibility: auto; contain-intrinsic-size: 900px;
         }
         .lyrics-container {
             position: relative; width: 100%; max-width: 1100px; height: 650px; margin-top: 50px;
@@ -241,7 +225,6 @@
         .fan-board {
             padding: 100px 5%; background: #050510;
             min-height: 100vh; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden;
-            content-visibility: auto; contain-intrinsic-size: 900px;
         }
         .fan-board::before {
             content: ""; position: absolute; top: 0; left: -50%; width: 200%; height: 100%;
@@ -275,9 +258,9 @@
             border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.08);
             position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .media-grid { display: grid; gap: 8px; margin-top: 15px; width: min(100%, 500px); }
+        .media-grid { display: grid; gap: 8px; margin-top: 15px; width: 100%; max-width: 500px; }
         .media-grid[data-count="1"] { grid-template-columns: 1fr; }
-        .media-grid[data-count="2"], .media-grid[data-count="4"] { grid-template-columns: 1fr 1fr; max-width: 340px; }
+        .media-grid[data-count="2"], .media-grid[data-count="4"] { grid-template-columns: 1fr 1fr; width: 340px; }
         .media-grid[data-count="3"], .media-grid[data-count="5"], .media-grid[data-count="6"],
         .media-grid[data-count="7"], .media-grid[data-count="8"], .media-grid[data-count="9"] { grid-template-columns: repeat(3, 1fr); }
         .media-container { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
@@ -322,10 +305,7 @@
         .delete-btn:hover { color: #ff4d4d; }
         .feed-user { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .feed-avatar { width: 45px; height: 45px; border-radius: 12px; background: linear-gradient(45deg, #00ffff, #7928ca); display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .feed-content { line-height: 1.6; color: #eee; font-size: 1.05rem; white-space: pre-wrap; overflow-wrap: anywhere; }
-        .comment-text { color:#00d2ff; font-size:0.8rem; overflow-wrap:anywhere; }
-        .comment-meta { font-size:0.6rem; color:#666; }
-        .comment-delete { cursor:pointer; color:#ff4d4d; font-size:0.7rem; border:0; background:transparent; padding:0; }
+        .feed-content { line-height: 1.6; color: #eee; font-size: 1.05rem; }
 
         /* ===================== 播放器叠加层 ===================== */
         #player-overlay {
@@ -440,40 +420,15 @@
 
         /* ===================== 移动端适配 ===================== */
         @media (max-width: 768px) {
-            #topnav { justify-content: flex-start; height: 54px; padding: 0 14px; gap: 6px; background: rgba(5,5,16,0.82); backdrop-filter: blur(18px); }
-            .nav-link { flex: 0 0 auto; font-size: 0.68rem; letter-spacing: 1.5px; padding: 6px 10px; }
             #preview-container { gap: 8px !important; }
             #preview-container div { width: 70px !important; height: 70px !important; }
             .welcome-screen { flex-direction: column; }
-            .top-left-avatar { top: 68px; left: 18px; }
-            .top-left-avatar img { width: 46px; height: 46px; }
-            .left-hero, .right-honor { position: relative; width: 100%; clip-path: none; height: 50vh; text-align: center; padding: 0 18px; }
-            .honor-title { font-size: 2.1rem; letter-spacing: 2px; }
-            .honor-list { margin-top: 22px; }
-            .honor-list .num { font-size: 2rem; }
-            .album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-            .album-card { padding: 14px 10px; border-radius: 14px; }
-            .album-cover { width: 112px; height: 112px; }
+            .left-hero, .right-honor { position: relative; width: 100%; clip-path: none; height: 50vh; text-align: center; padding: 0; }
             .lyrics-container { height: auto; display: flex; flex-direction: column; gap: 15px; }
-            .lyric-card { position: relative !important; left: 0 !important; top: 0 !important; width: 100%; margin: 0 auto; white-space: normal; }
-            .publish-area, .feed-item { padding: 18px; border-radius: 16px; }
-            .input-controls, .comment-input-wrap { flex-direction: column; align-items: stretch; }
+            .lyric-card { position: relative !important; left: 0 !important; top: 0 !important; width: 90%; margin: 0 auto; }
             iframe { width: 100%; height: 250px; }
             .player-container { flex-direction: column; gap: 20px; }
-            .vinyl-disc { width: 210px; height: 210px; }
-            .media-grid, .media-grid[data-count="2"], .media-grid[data-count="4"] { width: 100%; max-width: 100%; }
-            .media-grid[data-count="3"], .media-grid[data-count="5"], .media-grid[data-count="6"],
-            .media-grid[data-count="7"], .media-grid[data-count="8"], .media-grid[data-count="9"] { grid-template-columns: repeat(2, 1fr); }
-            .nickname-box { width: min(92vw, 340px); padding: 28px 22px; border-radius: 18px; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                scroll-behavior: auto !important;
-                transition-duration: 0.01ms !important;
-            }
+            .media-grid { max-width: 100%; }
         }
 
         /* ===================== 灯箱（旧版兼容，已被统一灯箱取代）===================== */
@@ -501,7 +456,7 @@
         <div class="glow-orb glow-orb-2"></div>
 
         <div class="top-left-avatar" style="opacity:0; animation: fadeInUp 0.6s ease 2.6s forwards;">
-            <img src="images/gem-avatar.jpg" alt="G.E.M. DIGITAL 标志" decoding="async">
+            <img src="images/gem-avatar.jpg" alt="Logo">
             <span style="font-weight: bold;">G.E.M. DIGITAL</span>
         </div>
         <div class="left-hero"></div>
@@ -528,21 +483,21 @@
     <main class="main-content" id="albums">
         <h1 style="text-shadow: 0 0 10px #00ffff; margin-bottom: 50px;" class="reveal">ALBUMS COLLECTION</h1>
         <div class="album-grid">
-            <div class="album-card reveal"><img src="images/album1.jpg" class="album-cover" alt="冰河时代封面" loading="lazy" decoding="async"><div class="album-title">冰河时代</div><button class="listen-btn" onclick="openPlayer('冰河时代','images/album1.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114607880471878&bvid=BV1By7zzqEV6&cid=30303846414&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album2.jpg" class="album-cover" alt="摩天动物园封面" loading="lazy" decoding="async"><div class="album-title">摩天动物园</div><button class="listen-btn" onclick="openPlayer('摩天动物园','images/album2.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=881098889&bvid=BV19K4y1B7eF&cid=1405747369&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album3.jpg" class="album-cover" alt="唯一封面" loading="lazy" decoding="async"><div class="album-title">唯一</div><button class="listen-btn" onclick="openPlayer('唯一','images/album3.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114574158267780&bvid=BV1T3jmzuEma&cid=30185359702&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album4.jpg" class="album-cover" alt="灰狼封面" loading="lazy" decoding="async"><div class="album-title">灰狼</div><button class="listen-btn" onclick="openPlayer('灰狼','images/album4.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113708604854093&bvid=BV1JTkZYkEAq&cid=27512277647&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album5.jpg" class="album-cover" alt="透明封面" loading="lazy" decoding="async"><div class="album-title">透明</div><button class="listen-btn" onclick="openPlayer('透明','images/album5.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=1201468421&bvid=BV1uF4m1V72Y&cid=1459264591&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album6.jpg" class="album-cover" alt="于是封面" loading="lazy" decoding="async"><div class="album-title">于是</div><button class="listen-btn" onclick="openPlayer('于是','images/album6.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114530554216698&bvid=BV1BKEmzbEhe&cid=30031286256&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album7.jpg" class="album-cover" alt="再见封面" loading="lazy" decoding="async"><div class="album-title">再见</div><button class="listen-btn" onclick="openPlayer('再见','images/album7.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114014822597483&bvid=BV18SwUeDEoh&cid=28425847216&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album8.jpg" class="album-cover" alt="倒流时间封面" loading="lazy" decoding="async"><div class="album-title">倒流时间</div><button class="listen-btn" onclick="openPlayer('倒流时间','images/album8.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113764271656024&bvid=BV1pu6SYHEAB&cid=27678016922&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album9.jpg" class="album-cover" alt="Fly Away 封面" loading="lazy" decoding="async"><div class="album-title">Fly Away</div><button class="listen-btn" onclick="openPlayer('Fly Away','images/album9.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=966699087&bvid=BV1uW4y1c7Jg&cid=1479219198&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album10.jpg" class="album-cover" alt="Hell 封面" loading="lazy" decoding="async"><div class="album-title">Hell</div><button class="listen-btn" onclick="openPlayer('Hell','images/album10.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113808932604586&bvid=BV1sCcFeqE42&cid=27833860535&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album11.jpg" class="album-cover" alt="Give me GEM 封面" loading="lazy" decoding="async"><div class="album-title">Give me GEM</div><button class="listen-btn" onclick="openPlayer('Give me GEM','images/album11.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=1106100504&bvid=BV1mw4m1a7iB&cid=1603644441&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album12.jpg" class="album-cover" alt="超能力封面" loading="lazy" decoding="async"><div class="album-title">超能力</div><button class="listen-btn" onclick="openPlayer('超能力','images/album12.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114253210058889&bvid=BV1gPZkYWEJq&cid=29152905337&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album13.jpg" class="album-cover" alt="天空没有极限封面" loading="lazy" decoding="async"><div class="album-title">天空没有极限</div><button class="listen-btn" onclick="openPlayer('天空没有极限','images/album13.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=881431669&bvid=BV1RK4y1q7A1&cid=1412120699&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album14.jpg" class="album-cover" alt="海阔天空封面" loading="lazy" decoding="async"><div class="album-title">海阔天空</div><button class="listen-btn" onclick="openPlayer('海阔天空','images/album14.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113985915453916&bvid=BV1j4N6eLEeR&cid=28347664201&p=1')">WATCH MV</button></div>
-            <div class="album-card reveal"><img src="images/album15.jpg" class="album-cover" alt="差不多姑娘封面" loading="lazy" decoding="async"><div class="album-title">差不多姑娘</div><button class="listen-btn" onclick="openPlayer('差不多姑娘','images/album15.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114162243994858&bvid=BV1wtQrY4ECB&cid=28868087713&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album1.jpg" class="album-cover"><div class="album-title">冰河时代</div><button class="listen-btn" onclick="openPlayer('冰河时代','images/album1.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114607880471878&bvid=BV1By7zzqEV6&cid=30303846414&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album2.jpg" class="album-cover"><div class="album-title">摩天动物园</div><button class="listen-btn" onclick="openPlayer('摩天动物园','images/album2.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=881098889&bvid=BV19K4y1B7eF&cid=1405747369&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album3.jpg" class="album-cover"><div class="album-title">唯一</div><button class="listen-btn" onclick="openPlayer('唯一','images/album3.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114574158267780&bvid=BV1T3jmzuEma&cid=30185359702&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album4.jpg" class="album-cover"><div class="album-title">灰狼</div><button class="listen-btn" onclick="openPlayer('灰狼','images/album4.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113708604854093&bvid=BV1JTkZYkEAq&cid=27512277647&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album5.jpg" class="album-cover"><div class="album-title">透明</div><button class="listen-btn" onclick="openPlayer('透明','images/album5.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=1201468421&bvid=BV1uF4m1V72Y&cid=1459264591&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album6.jpg" class="album-cover"><div class="album-title">于是</div><button class="listen-btn" onclick="openPlayer('于是','images/album6.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114530554216698&bvid=BV1BKEmzbEhe&cid=30031286256&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album7.jpg" class="album-cover"><div class="album-title">再见</div><button class="listen-btn" onclick="openPlayer('再见','images/album7.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114014822597483&bvid=BV18SwUeDEoh&cid=28425847216&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album8.jpg" class="album-cover"><div class="album-title">倒流时间</div><button class="listen-btn" onclick="openPlayer('倒流时间','images/album8.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113764271656024&bvid=BV1pu6SYHEAB&cid=27678016922&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album9.jpg" class="album-cover"><div class="album-title">Fly Away</div><button class="listen-btn" onclick="openPlayer('Fly Away','images/album9.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=966699087&bvid=BV1uW4y1c7Jg&cid=1479219198&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album10.jpg" class="album-cover"><div class="album-title">Hell</div><button class="listen-btn" onclick="openPlayer('Hell','images/album10.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113808932604586&bvid=BV1sCcFeqE42&cid=27833860535&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album11.jpg" class="album-cover"><div class="album-title">Give me GEM</div><button class="listen-btn" onclick="openPlayer('Give me GEM','images/album11.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=1106100504&bvid=BV1mw4m1a7iB&cid=1603644441&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album12.jpg" class="album-cover"><div class="album-title">超能力</div><button class="listen-btn" onclick="openPlayer('超能力','images/album12.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114253210058889&bvid=BV1gPZkYWEJq&cid=29152905337&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album13.jpg" class="album-cover"><div class="album-title">天空没有极限</div><button class="listen-btn" onclick="openPlayer('天空没有极限','images/album13.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=881431669&bvid=BV1RK4y1q7A1&cid=1412120699&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album14.jpg" class="album-cover"><div class="album-title">海阔天空</div><button class="listen-btn" onclick="openPlayer('海阔天空','images/album14.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=113985915453916&bvid=BV1j4N6eLEeR&cid=28347664201&p=1')">WATCH MV</button></div>
+            <div class="album-card reveal"><img src="images/album15.jpg" class="album-cover"><div class="album-title">差不多姑娘</div><button class="listen-btn" onclick="openPlayer('差不多姑娘','images/album15.jpg','https://player.bilibili.com/player.html?isOutside=true&aid=114162243994858&bvid=BV1wtQrY4ECB&cid=28868087713&p=1')">WATCH MV</button></div>
         </div>
     </main>
 
@@ -625,25 +580,6 @@
     const SUPABASE_URL = 'https://ubgdctufazaxqydzjfjm.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_G--UZTZyO-9PFAFC8P0lQw_Dy4lrymG';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    function escapeHTML(value) {
-        return String(value ?? '').replace(/[&<>"']/g, char => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        }[char]));
-    }
-
-    function escapeJS(value) {
-        return String(value ?? '')
-            .replace(/\\/g, '\\\\')
-            .replace(/'/g, "\\'")
-            .replace(/\r/g, '\\r')
-            .replace(/\n/g, '\\n')
-            .replace(/</g, '\\x3C');
-    }
-
-    function isVideoUrl(url) {
-        return /\.(mp4|mov|webm)$/i.test(String(url).split('?')[0]);
-    }
 
     // ==================== 昵称弹窗 ====================
     (function initNickname() {
@@ -799,7 +735,7 @@
             document.getElementById('post-file').value = '';
             document.getElementById('preview-container').innerHTML = '';
             selectedFiles = [];
-            await fetchPosts();
+            location.reload();
         } catch (err) {
             console.error('发布出错:', err);
             alert('发布失败：' + err.message);
@@ -811,18 +747,9 @@
     // ==================== 读取帖子 ====================
     async function fetchPosts() {
         const { data: posts, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
+        if (error) { console.error('读取失败:', error); return; }
         const container = document.getElementById('feed-container');
-        if (!container) return;
-        if (error) {
-            console.error('读取失败:', error);
-            container.innerHTML = '<div class="feed-item">留言暂时加载失败，请稍后再试。</div>';
-            return;
-        }
         container.innerHTML = '';
-        if (!posts || posts.length === 0) {
-            container.innerHTML = '<div class="feed-item">还没有粉丝动态，来写下第一条吧。</div>';
-            return;
-        }
         posts.forEach(post => renderPostToUI(post, true));
     }
 
@@ -831,30 +758,22 @@
         const container = document.getElementById('feed-container');
         if (!container) return;
         const postId = post.id;
-        const postIdJs = escapeJS(postId);
-        const nickname = post.user_nickname || '匿名粉丝';
-        const nicknameHtml = escapeHTML(nickname);
-        const nicknameJs = escapeJS(nickname);
-        const contentHtml = escapeHTML(post.content || '');
         const newItem = document.createElement('div');
         newItem.className = 'feed-item'; newItem.id = `post-${postId}`;
 
         let mediaHtml = '';
         if (post.media_urls && Array.isArray(post.media_urls) && post.media_urls.length > 0) {
-            const safeUrls = post.media_urls.map(url => String(url || '')).filter(Boolean);
-            const imageUrls = safeUrls.filter(u => !isVideoUrl(u));
+            const imageUrls = post.media_urls.filter(u => !/\.(mp4|mov)$/i.test(u));
             const allUrlsJson = JSON.stringify(imageUrls).replace(/"/g, '&quot;');
-            mediaHtml = `<div class="media-grid" data-count="${safeUrls.length}" data-imgurls="${allUrlsJson}">`;
-            safeUrls.forEach((url, index) => {
-                const isVideo = isVideoUrl(url);
+            mediaHtml = `<div class="media-grid" data-count="${post.media_urls.length}" data-imgurls="${allUrlsJson}">`;
+            post.media_urls.forEach((url, index) => {
+                const isVideo = /\.(mp4|mov)$/i.test(url);
                 const mid = `media-${postId}-${index}`;
-                const urlAttr = escapeHTML(url);
-                const urlJs = escapeJS(url);
                 mediaHtml += `<div class="media-container">
                     ${!isVideo
-                        ? `<img id="${mid}" src="${urlAttr}" alt="粉丝上传图片" onclick="openViewer('${urlJs}', JSON.parse(this.closest('.media-grid').dataset.imgurls||'[]'))" loading="lazy" decoding="async">`
-                        : `<video id="${mid}" src="${urlAttr}" controls preload="metadata"></video>`}
-                    <div class="more-trigger" onclick="toggleDownload(event,'${postIdJs}-${index}')" aria-label="更多操作">···</div>
+                        ? `<img id="${mid}" src="${url}" onclick="openViewer('${url}', JSON.parse(this.closest('.media-grid').dataset.imgurls||'[]'))" loading="lazy">`
+                        : `<video id="${mid}" src="${url}" controls></video>`}
+                    <div class="more-trigger" onclick="toggleDownload(event,'${postId}-${index}')">···</div>
                     <div class="download-pop" id="pop-${postId}-${index}">
                         <span onclick="downloadMedia('${mid}','GEM-resource')">💾 下载</span>
                     </div>
@@ -864,29 +783,29 @@
         }
 
         const currentUser = localStorage.getItem('gem_user_id');
-        const showDelete = (nickname === currentUser) || (currentUser === 'Admin_GEM_007');
-        const deleteBtnHtml = showDelete ? `<div class="delete-btn" onclick="deletePost('${postIdJs}','${nicknameJs}')" title="删除">✕</div>` : '';
+        const showDelete = (post.user_nickname === currentUser) || (currentUser === 'Admin_GEM_007');
+        const deleteBtnHtml = showDelete ? `<div class="delete-btn" onclick="deletePost('${postId}','${post.user_nickname}')" title="删除">✕</div>` : '';
 
         newItem.innerHTML = `
             ${deleteBtnHtml}
             <div class="feed-user">
-                <div class="feed-avatar">${escapeHTML(nickname.charAt(0) || '匿')}</div>
+                <div class="feed-avatar">${(post.user_nickname || '匿').charAt(0)}</div>
                 <div>
-                    <b>${nicknameHtml}</b>
+                    <b>${post.user_nickname || '匿名粉丝'}</b>
                     <div style="font-size:0.7rem;color:#888">${new Date(post.created_at).toLocaleString()}</div>
                 </div>
             </div>
-            <div class="feed-content">${contentHtml}</div>
+            <div class="feed-content">${post.content || ''}</div>
             ${mediaHtml}
             <div class="action-bar">
-                <div class="action-item" onclick="toggleComment('${postIdJs}')">💬 评论</div>
-                <div class="action-item" onclick="toggleLike(this,'${postIdJs}')">❤️ <span class="like-count">${post.likes || 0}</span></div>
+                <div class="action-item" onclick="toggleComment('${postId}')">💬 评论</div>
+                <div class="action-item" onclick="toggleLike(this,'${postId}')">❤️ <span class="like-count">${post.likes || 0}</span></div>
             </div>
             <div class="comment-section" id="comment-sec-${postId}" style="display:none">
                 <div class="comment-list" id="comment-list-${postId}"></div>
                 <div class="comment-input-wrap">
                     <input type="text" id="input-${postId}" placeholder="写下你的回复...">
-                    <button class="comment-submit" onclick="addComment('${postIdJs}')">发送</button>
+                    <button class="comment-submit" onclick="addComment('${postId}')">发送</button>
                 </div>
             </div>`;
         if (isInitialLoad) container.appendChild(newItem);
@@ -921,13 +840,7 @@
             element.classList.add('liked');
             const { error } = await supabaseClient.from('posts').update({ likes: currentLikes }).eq('id', postId);
             if (error) throw error;
-        } catch (err) {
-            countSpan.innerText = Math.max(0, currentLikes - 1);
-            element.style.color = '';
-            element.classList.remove('liked');
-            console.error('点赞失败:', err);
-            alert('点赞失败，请稍后再试。');
-        }
+        } catch (err) { console.error('点赞失败:', err); }
     }
 
     // ==================== 评论 ====================
@@ -942,29 +855,21 @@
 
     async function fetchComments(postId) {
         const { data: comments, error } = await supabaseClient.from('comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
-        const list = document.getElementById(`comment-list-${postId}`);
-        if (!list) return;
-        list.innerHTML = '';
-        if (error) {
-            console.error('评论读取失败:', error);
-            list.innerHTML = '<div class="comment-item">评论加载失败。</div>';
-            return;
+        if (!error) {
+            const list = document.getElementById(`comment-list-${postId}`);
+            list.innerHTML = '';
+            comments.forEach(comment => {
+                const div = document.createElement('div');
+                div.className = 'comment-item'; div.id = `comment-${comment.id}`;
+                div.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                        <span style="color:#00d2ff;font-size:0.8rem;">粉丝: ${comment.content}</span>
+                        <span style="cursor:pointer;color:#ff4d4d;font-size:0.7rem;" onclick="deleteComment(${comment.id})">删除</span>
+                    </div>
+                    <div style="font-size:0.6rem;color:#666;">${new Date(comment.created_at).toLocaleString()}</div>`;
+                list.appendChild(div);
+            });
         }
-        if (!comments || comments.length === 0) {
-            list.innerHTML = '<div class="comment-item">还没有评论。</div>';
-            return;
-        }
-        comments.forEach(comment => {
-            const div = document.createElement('div');
-            div.className = 'comment-item'; div.id = `comment-${comment.id}`;
-            div.innerHTML = `
-                <div>
-                    <div class="comment-text">粉丝: ${escapeHTML(comment.content || '')}</div>
-                    <div class="comment-meta">${new Date(comment.created_at).toLocaleString()}</div>
-                </div>
-                <button class="comment-delete" onclick="deleteComment(${Number(comment.id)})">删除</button>`;
-            list.appendChild(div);
-        });
     }
 
     async function deleteComment(commentId) {
